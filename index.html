@@ -1,12 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirect</title>
-    <script src="script/redirect.js" defer></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bandit of booble games</title>
+	<link rel="stylesheet" href="style/home.css">
+	<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+	<script src="script/home-theme.js"></script>
+	<script src="script/home-nav.js" defer></script>
 </head>
 <body>
-    <p>:3</p>
+	<header>
+		<nav aria-label="Main navigation">
+			<a class="brand" href="./index.html">Home</a>
+			<div class="menu">
+				<details name="nav-menu">
+					<summary>Games</summary>
+					<div class="dropdown" aria-label="Games menu">
+						<a class="dropdown-link" href="bugguesser.html">Bugguesser</a>
+					</div>
+				</details>
+				<button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode">
+					<img id="themeIcon" src="images/moon.svg" alt="" aria-hidden="true">
+				</button>
+			</div>
+		</nav>
+	</header>
+	<main>
+		<section class="home-hero" aria-labelledby="homeTitle">
+			<span class="hero-border hero-border-top" aria-hidden="true"></span>
+			<span class="hero-border hero-border-bottom" aria-hidden="true"></span>
+			<span class="hero-border hero-border-corner hero-border-top-left" aria-hidden="true"></span>
+			<span class="hero-border hero-border-corner hero-border-top-right" aria-hidden="true"></span>
+			<span class="hero-border hero-border-corner hero-border-bottom-left" aria-hidden="true"></span>
+			<span class="hero-border hero-border-corner hero-border-bottom-right" aria-hidden="true"></span>
+			<h1 id="homeTitle">Who's That Bug?</h1>
+			<p class="home-intro">Figure out which Hallownester is hiding in the dark!</p>
+			<p class="creation-date">Created <time datetime="2026-10-25">October 25, 2026</time></p>
+			<a class="play-button" href="bugguesser.html">
+				Play Bugguesser
+			</a>
+		</section>
+	</main>
 </body>
 </html>
