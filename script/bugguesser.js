@@ -582,6 +582,8 @@ if (!rosterIsValid) {
     } else if (dailyState) {
         if (!storedState && !saveDailyState()) {
             disableGame("Daily progress could not be saved. The game is paused to protect your attempt.");
+        } else if (dailyState.finished) {
+            showDailySummary();
         } else {
             if (dailyState.current.outcome) {
                 gameReady.hidden = true;
