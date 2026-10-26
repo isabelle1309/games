@@ -128,6 +128,53 @@ main {
 	text-align: center;
 	isolation: isolate;
 }
+.hero-border {
+	position: absolute;
+	z-index: -1;
+	pointer-events: none;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+}
+.hero-border-top {
+	top: 18px;
+	left: 50%;
+	width: min(757px, calc(100% - 32px));
+	aspect-ratio: 757 / 85;
+	background-image: url("../images/hk/top.png");
+	transform: translateX(-50%);
+}
+.hero-border-bottom {
+	bottom: 18px;
+	left: 50%;
+	width: min(729px, calc(100% - 32px));
+	aspect-ratio: 729 / 54;
+	background-image: url("../images/hk/bottom.png");
+	transform: translateX(-50%);
+}
+.hero-border-corner {
+	width: min(210px, calc((100% - 80px) / 2));
+	aspect-ratio: 210 / 179;
+	background-image: url("../images/hk/corner.png");
+}
+.hero-border-top-left {
+	top: 18px;
+	left: 16px;
+	transform: scale(-1);
+}
+.hero-border-top-right {
+	top: 18px;
+	right: 16px;
+	transform: scaleY(-1);
+}
+.hero-border-bottom-left {
+	bottom: 18px;
+	left: 16px;
+	transform: scaleX(-1);
+}
+.hero-border-bottom-right {
+	right: 16px;
+	bottom: 18px;
+}
 .home-hero::before {
 	position: absolute;
 	z-index: -1;
