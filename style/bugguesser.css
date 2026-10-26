@@ -75,6 +75,43 @@ body {
 	color: var(--gold);
 	font-variant-numeric: tabular-nums;
 }
+.game-ready {
+	padding: 34px 12px;
+	text-align: center;
+}
+.game-ready h2 {
+	margin: 0;
+	color: var(--gold);
+	font-family: Georgia, "Times New Roman", serif;
+	font-size: 1.8rem;
+	font-weight: 500;
+}
+.game-ready p {
+	margin: 10px 0 22px;
+	color: var(--game-muted);
+}
+.ready-button {
+	min-width: 140px;
+	min-height: 48px;
+	padding: 10px 20px;
+	border: 1px solid var(--gold);
+	border-radius: 8px;
+	background: var(--gold);
+	color: #17212a;
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+	transition: transform .15s ease, box-shadow .15s ease;
+}
+:root[data-theme="light"] .ready-button { color: #fff; }
+.ready-button:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 8px 20px rgb(0 0 0 / 20%);
+}
+.ready-button:focus-visible {
+	outline: 2px solid var(--gold);
+	outline-offset: 3px;
+}
 .sprite-frame {
 	position: relative;
 	display: grid;
@@ -129,6 +166,10 @@ body {
 	margin: 0 0 14px;
 	color: var(--game-muted);
 	text-align: center;
+}
+.revealed-name {
+	color: var(--gold);
+	font-weight: 700;
 }
 .guess-form label,
 .hints-panel h2 {

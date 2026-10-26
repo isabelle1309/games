@@ -38,36 +38,44 @@
 		</section>
 
 		<section class="game-card" id="gameCard" aria-label="Character guessing game">
-			<div class="game-stats" aria-live="polite">
-				<p>Score <strong id="score">0</strong></p>
-				<p>Round <strong id="round">0</strong></p>
-				<p>Total guesses <strong id="guessCount">0</strong></p>
-				<p>Total hints <strong id="hintCount">0</strong></p>
+			<div class="game-ready" id="gameReady">
+				<h2>Ready to play?</h2>
+				<p>Your daily challenge is waiting. Start when you're ready.</p>
+				<button class="ready-button" id="readyButton" type="button">Ready</button>
 			</div>
 
-			<section class="hints-panel" aria-labelledby="hintsTitle">
-				<h2 id="hintsTitle">Hint</h2>
-				<ol class="hints-list" id="hintsList"></ol>
-				<button class="hint-button" id="hintButton" type="button">Reveal movement hint (-2 points)</button>
-				<button class="hint-button reveal-name-button" id="revealNameButton" type="button">Reveal name (-10
-					points)</button>
-			</section>
-
-			<div class="sprite-frame" id="spriteFrame">
-				<img id="characterSprite" alt="Black silhouette of a character">
-			</div>
-
-			<p class="game-status" id="gameStatus" role="status" aria-live="polite">
-				Preparing the roster...
-			</p>
-			<form class="guess-form" id="guessForm">
-				<label for="guessInput">Who is this bug?</label>
-				<div class="guess-controls">
-					<input id="guessInput" name="guess" type="text" autocomplete="off" required>
-					<button class="guess-button" type="submit">Guess</button>
+			<div id="roundContent" hidden>
+				<div class="game-stats" aria-live="polite">
+					<p>Score <strong id="score">0</strong></p>
+					<p>Round <strong id="round">0</strong></p>
+					<p>Total guesses <strong id="guessCount">0</strong></p>
+					<p>Total hints <strong id="hintCount">0</strong></p>
 				</div>
-			</form>
-			<button class="next-button" id="nextButton" type="button" hidden>Next bug</button>
+
+				<section class="hints-panel" aria-labelledby="hintsTitle">
+					<h2 id="hintsTitle">Hint</h2>
+					<ol class="hints-list" id="hintsList"></ol>
+					<button class="hint-button" id="hintButton" type="button">Reveal movement hint (-2 points)</button>
+					<button class="hint-button reveal-name-button" id="revealNameButton" type="button">Reveal name (-10
+						points)</button>
+				</section>
+
+				<div class="sprite-frame" id="spriteFrame">
+					<img id="characterSprite" alt="Black silhouette of a character">
+				</div>
+
+				<p class="game-status" id="gameStatus" role="status" aria-live="polite">
+					Preparing the roster...
+				</p>
+				<form class="guess-form" id="guessForm">
+					<label for="guessInput">Who is this bug?</label>
+					<div class="guess-controls">
+						<input id="guessInput" name="guess" type="text" autocomplete="off" required>
+						<button class="guess-button" type="submit">Guess</button>
+					</div>
+				</form>
+				<button class="next-button" id="nextButton" type="button" hidden>Next bug</button>
+			</div>
 		</section>
 
 		<p class="setup-note" id="setupNote"></p>

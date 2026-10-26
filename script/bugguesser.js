@@ -21,6 +21,9 @@ const hintsList = document.getElementById("hintsList");
 const hintButton = document.getElementById("hintButton");
 const revealNameButton = document.getElementById("revealNameButton");
 const nextButton = document.getElementById("nextButton");
+const gameReady = document.getElementById("gameReady");
+const readyButton = document.getElementById("readyButton");
+const roundContent = document.getElementById("roundContent");
 const setupNote = document.getElementById("setupNote");
 const gameCard = document.getElementById("gameCard");
 const dailySummary = document.getElementById("dailySummary");
@@ -111,7 +114,7 @@ function createInitialState() {
         totalHints: 0,
         results: [],
         current: {
-            startedAt: Date.now(),
+            startedAt: null,
             guesses: 0,
             hints: 0,
             outcome: null,
@@ -145,7 +148,7 @@ function isValidDailyState(state) {
             && ["correct", "revealed", "skipped"].includes(result.outcome)
         )
         && state.current
-        && Number.isFinite(state.current.startedAt)
+        && (state.current.startedAt === null || Number.isFinite(state.current.startedAt))
         && Number.isInteger(state.current.guesses)
         && Number.isInteger(state.current.hints)
         && state.current.hints >= 0
@@ -301,16 +304,23 @@ function renderResolvedRound() {
             `Correct! ${result.name} — ${result.guesses} ${result.guesses === 1 ? "guess" : "guesses"}, `
             + `${result.hints} ${result.hints === 1 ? "hint" : "hints"} used. +${result.points} points.`;
     } else if (result.outcome === "revealed") {
-        gameStatus.textContent =
-            `The bug was ${result.name}. 10 points deducted. `
-            + `${result.guesses} ${result.guesses === 1 ? "guess" : "guesses"} and `
-            + `${result.hints} ${result.hints === 1 ? "hint" : "hints"} used.`;
+        const revealedName = document.createElement("strong");
+        revealedName.className = "revealed-name";
+        revealedName.textContent = result.name;
+        gameStatus.replaceChildren(
+            "The bug was ",
+            revealedName,
+            `. 10 points deducted. ${result.guesses} ${result.guesses === 1 ? "guess" : "guesses"} and `
+            + `${result.hints} ${result.hints === 1 ? "hint" : "hints"} used.`
+        );
     } else {
         gameStatus.textContent = `Could not load ${result.name}'s sprite. This round was skipped.`;
     }
 
     if (dailyState.finished) {
-        showDailySummary();
+        nextButton.textContent = "Continue to summary";
+        nextButton.hidden = false;
+        nextButton.focus();
         return;
     }
 
@@ -402,6 +412,11 @@ function formatDuration(milliseconds) {
 }
 
 async function startNextRound() {
+    if (dailyState.finished) {
+        showDailySummary();
+        return;
+    }
+
     nextButton.disabled = true;
     await fadeOutSprite();
     dailyState.round++;
@@ -493,8 +508,26 @@ function handleSpriteError() {
 }
 
 function disableGame(message) {
+    gameReady.hidden = true;
+    roundContent.hidden = false;
     gameStatus.textContent = message;
     setRoundControlsDisabled(true);
+}
+
+function startGame() {
+    gameReady.hidden = true;
+    roundContent.hidden = false;
+    readyButton.disabled = true;
+
+    if (dailyState.current.startedAt === null) {
+        dailyState.current.startedAt = Date.now();
+        if (!saveDailyState()) {
+            disableGame("Daily progress could not be saved. The game is paused to protect your attempt.");
+            return;
+        }
+    }
+
+    renderCurrentRound();
 }
 
 sprite.addEventListener("error", handleSpriteError);
@@ -503,6 +536,7 @@ guessForm.addEventListener("submit", submitGuess);
 hintButton.addEventListener("click", revealHint);
 revealNameButton.addEventListener("click", revealName);
 nextButton.addEventListener("click", startNextRound);
+readyButton.addEventListener("click", startGame);
 copySummaryButton.addEventListener("click", copyDailySummary);
 
 const rosterIsValid = Array.isArray(characters)
@@ -519,6 +553,8 @@ const rosterIsValid = Array.isArray(characters)
     );
 
 if (!rosterIsValid) {
+    gameReady.hidden = true;
+    roundContent.hidden = false;
     gameStatus.textContent = "The roster is empty or contains invalid character data.";
     setupNote.hidden = false;
     roundElement.textContent = "0";
@@ -546,10 +582,14 @@ if (!rosterIsValid) {
     } else if (dailyState) {
         if (!storedState && !saveDailyState()) {
             disableGame("Daily progress could not be saved. The game is paused to protect your attempt.");
-        } else if (dailyState.finished) {
-            showDailySummary();
         } else {
-            renderCurrentRound();
+            if (dailyState.current.outcome) {
+                gameReady.hidden = true;
+                roundContent.hidden = false;
+                renderCurrentRound();
+            } else {
+                gameStatus.textContent = "Your daily challenge is ready. Select Ready when you'd like to begin.";
+            }
         }
     }
 }
