@@ -117,8 +117,98 @@ main {
 	min-height: calc(100vh - 69px);
 	margin: 0 auto;
 }
+.home-hero {
+	position: relative;
+	display: grid;
+	min-height: min(620px, calc(100vh - 69px));
+	align-content: center;
+	justify-items: center;
+	overflow: hidden;
+	padding: 64px 24px;
+	text-align: center;
+	isolation: isolate;
+}
+.home-hero::before {
+	position: absolute;
+	z-index: -1;
+	top: 50%;
+	left: 50%;
+	width: min(620px, 100%, calc(100vh - 69px));
+	aspect-ratio: 1;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgb(141 183 179 / 12%), transparent 68%);
+	content: "";
+	transform: translate(-50%, -50%);
+}
+.home-eyebrow {
+	margin: 0 0 16px;
+	color: #d5b77b;
+	font-size: .78rem;
+	font-weight: 700;
+	letter-spacing: .2em;
+	text-transform: uppercase;
+}
+:root[data-theme="light"] .home-eyebrow { color: #81602b; }
+.home-hero h1 {
+	margin: 0;
+	font-family: Georgia, "Times New Roman", serif;
+	font-size: clamp(2.8rem, 9vw, 5.5rem);
+	font-weight: 500;
+	letter-spacing: .015em;
+	line-height: 1.05;
+}
+.home-intro {
+	max-width: 490px;
+	margin: 20px 0 14px;
+	color: var(--muted-text);
+	font-size: clamp(1rem, 2.5vw, 1.15rem);
+	line-height: 1.7;
+}
+.creation-date {
+	margin: 0 0 28px;
+	color: var(--muted-text);
+	font-size: .85rem;
+	letter-spacing: .04em;
+}
+.play-button {
+	display: inline-flex;
+	min-height: 54px;
+	align-items: center;
+	justify-content: center;
+	gap: 18px;
+	padding: 12px 20px;
+	border: 1px solid #d5b77b;
+	border-radius: 9px;
+	background: linear-gradient(135deg, #d5b77b, #b9975b);
+	box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+	color: #17212a;
+	font-size: 1rem;
+	font-weight: 700;
+	text-decoration: none;
+	transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+:root[data-theme="light"] .play-button {
+	border-color: #81602b;
+	background: linear-gradient(135deg, #9b7943, #81602b);
+	color: #fff;
+}
+.play-button:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 12px 30px rgb(0 0 0 / 28%);
+}
+.play-button:focus-visible {
+	outline: 3px solid var(--text);
+	outline-offset: 4px;
+}
+.play-button-arrow {
+	font-size: 1.25rem;
+	line-height: 1;
+	transition: transform .18s ease;
+}
+.play-button:hover .play-button-arrow { transform: translateX(3px); }
 @media (max-width: 480px) {
 	nav, main { width: calc(100% - 28px); }
 	.menu { gap: 0; }
 	summary { padding: 10px 8px; }
+	.home-hero { min-height: calc(100vh - 69px); }
 }
