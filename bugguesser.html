@@ -11,7 +11,7 @@
 	<link rel="icon" href="images/favicon.ico" type="image/x-icon">
 	<script src="script/home-theme.js"></script>
 	<script src="script/home-nav.js" defer></script>
-	<script type="module" src="script/bugguesser.js"></script>
+	<script type="module" src="script/bugguesser-selector.js"></script>
 </head>
 
 <body>
@@ -34,74 +34,73 @@
 	<main class="game-shell">
 		<section class="game-heading" aria-labelledby="gameTitle">
 			<h1 id="gameTitle">Who's That Bug?</h1>
-			<p class="game-intro" id="gameIntro">Study the silhouette. Which wanderer is hiding in the dark?</p>
+			<p class="game-intro" id="gameIntro">Choose a daily challenge from Hollow Knight or Silksong.</p>
 		</section>
 
-		<section class="game-card" id="gameCard" aria-label="Character guessing game">
-			<div class="game-ready" id="gameReady">
-				<h2>Ready to play?</h2>
-				<p>Your daily challenge is waiting. Start when you're ready.</p>
-				<button class="ready-button" id="readyButton" type="button">Ready</button>
-			</div>
-
-			<div id="roundContent" hidden>
-				<div class="game-stats" aria-live="polite">
-					<p>Score <strong id="score">0</strong></p>
-					<p>Round <strong id="round">0</strong></p>
-					<p>Total guesses <strong id="guessCount">0</strong></p>
-					<p>Total hints <strong id="hintCount">0</strong></p>
-				</div>
-
-				<section class="hints-panel" aria-labelledby="hintsTitle">
-					<h2 id="hintsTitle">Hint</h2>
-					<ol class="hints-list" id="hintsList"></ol>
-					<button class="hint-button" id="hintButton" type="button">Reveal movement hint (-2 points)</button>
-					<button class="hint-button reveal-name-button" id="revealNameButton" type="button">Reveal name (-10
-						points)</button>
-				</section>
-
-				<div class="sprite-frame" id="spriteFrame">
-					<img id="characterSprite" alt="Black silhouette of a character">
-				</div>
-
-				<p class="game-status" id="gameStatus" role="status" aria-live="polite">
-					Preparing the roster...
-				</p>
-				<form class="guess-form" id="guessForm">
-					<label for="guessInput">Who is this bug?</label>
-					<div class="guess-controls">
-						<input id="guessInput" name="guess" type="text" autocomplete="off" required>
-						<button class="guess-button" type="submit">Guess</button>
+		<section class="game-picker" aria-label="Choose a game">
+			<section class="game-edition" aria-labelledby="hollowKnightTitle">
+				<h2 id="hollowKnightTitle">Hollow Knight</h2>
+				<img class="game-title-divider" src="images/hk/hk_hr.png" alt="" aria-hidden="true">
+				<p>Choose a daily challenge:</p>
+				<div class="game-mode-list">
+					<div class="game-mode-option">
+						<button class="game-mode-button" type="button" data-game-mode="hk-enemies" aria-pressed="false">
+							<span>Enemies</span>
+							<small class="mode-selection-info" hidden></small>
+							<small class="mode-completion-info" hidden>Daily challenge completed</small>
+						</button>
+						<a class="ready-button mode-play-button" data-play-link href="bugguesser-game.html" hidden>Play</a>
 					</div>
-				</form>
-				<button class="next-button" id="nextButton" type="button" hidden>Next bug</button>
-			</div>
-		</section>
+					<div class="game-mode-option">
+						<button class="game-mode-button" type="button" data-game-mode="hk-npcs" aria-pressed="false">
+							<span>NPCs</span>
+							<small class="mode-selection-info" hidden></small>
+							<small class="mode-completion-info" hidden>Daily challenge completed</small>
+						</button>
+						<a class="ready-button mode-play-button" data-play-link href="bugguesser-game.html" hidden>Play</a>
+					</div>
+					<div class="game-mode-option">
+						<button class="game-mode-button" type="button" data-game-mode="hk-bosses" aria-pressed="false">
+							<span>Bosses</span>
+							<small class="mode-selection-info" hidden></small>
+							<small class="mode-completion-info" hidden>Daily challenge completed</small>
+						</button>
+						<a class="ready-button mode-play-button" data-play-link href="bugguesser-game.html" hidden>Play</a>
+					</div>
+					<div class="game-mode-option">
+						<button class="game-mode-button" type="button" data-game-mode="hk-npcs-bosses" aria-pressed="false">
+							<span>NPCs &amp; bosses</span>
+							<small class="mode-selection-info" hidden></small>
+							<small class="mode-completion-info" hidden>Daily challenge completed</small>
+						</button>
+						<a class="ready-button mode-play-button" data-play-link href="bugguesser-game.html" hidden>Play</a>
+					</div>
+				</div>
+			</section>
 
-		<p class="setup-note" id="setupNote"></p>
-		<section class="daily-summary" id="dailySummary" aria-labelledby="summaryTitle" hidden>
-			<h2 id="summaryTitle">Daily challenge complete</h2>
-			<p class="summary-date" id="summaryDate"></p>
-			<div class="summary-copy">
-				<button class="copy-summary-button" id="copySummaryButton" type="button">Copy summary</button>
-				<p id="copySummaryStatus" role="status" aria-live="polite"></p>
-			</div>
-			<div class="summary-table-wrap">
-				<table class="summary-table">
-					<thead>
-						<tr>
-							<th scope="col">Round</th>
-							<th scope="col">Character</th>
-							<th scope="col">Time</th>
-							<th scope="col">Guesses</th>
-							<th scope="col">Hints</th>
-						</tr>
-					</thead>
-					<tbody id="dailySummaryBody"></tbody>
-				</table>
-			</div>
-			<p class="no-replay-note">This daily attempt is complete in this browser. Come back tomorrow for a new set.
-			</p>
+			<section class="game-edition" aria-labelledby="silksongTitle">
+				<h2 id="silksongTitle">Silksong</h2>
+				<img class="game-title-divider" src="images/hk/hkss_hr.png" alt="" aria-hidden="true">
+				<p>Silksong character data is not available yet.</p>
+				<div class="game-mode-list">
+					<button class="game-mode-button" type="button" disabled>
+						<span>Enemies</span>
+						<small>Coming soon</small>
+					</button>
+					<button class="game-mode-button" type="button" disabled>
+						<span>NPCs</span>
+						<small>Coming soon</small>
+					</button>
+					<button class="game-mode-button" type="button" disabled>
+						<span>Bosses</span>
+						<small>Coming soon</small>
+					</button>
+					<button class="game-mode-button" type="button" disabled>
+						<span>NPCs &amp; bosses</span>
+						<small>Coming soon</small>
+					</button>
+				</div>
+			</section>
 		</section>
 	</main>
 </body>

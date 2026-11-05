@@ -1,12 +1,33 @@
-import { characters } from "./bugguesser-data.js";
+import { characters as enemyCharacters } from "./hk/enemy.js";
+import { characters as npcCharacters } from "./hk/npc.js";
+import { characters as bossCharacters } from "./hk/boss.js";
 
-const hintQuestion = "How does this bug move?";
+const hintQuestion = "What should you notice?";
 const maxHintsPerRound = 2;
 const dailyRoundCount = 10;
 const dailyStateVersion = 1;
+const dailyRosterRevision = 3;
 // Keep the schedule reproducible for every visitor while applying the seven-day exclusion rule.
 const dailyScheduleStart = Date.UTC(2020, 0, 1);
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
+const gameModes = {
+    "hk-enemies": {
+        title: "Hollow Knight - Enemies",
+        characters: enemyCharacters
+    },
+    "hk-npcs": {
+        title: "Hollow Knight - NPCs",
+        characters: npcCharacters
+    },
+    "hk-bosses": {
+        title: "Hollow Knight - Bosses",
+        characters: bossCharacters
+    },
+    "hk-npcs-bosses": {
+        title: "Hollow Knight - NPCs & bosses",
+        characters: [...npcCharacters, ...bossCharacters]
+    }
+};
 
 const scoreElement = document.getElementById("score");
 const roundElement = document.getElementById("round");
@@ -23,6 +44,8 @@ const revealNameButton = document.getElementById("revealNameButton");
 const nextButton = document.getElementById("nextButton");
 const gameReady = document.getElementById("gameReady");
 const readyButton = document.getElementById("readyButton");
+const readyTitle = document.getElementById("readyTitle");
+const readyCopy = document.getElementById("readyCopy");
 const roundContent = document.getElementById("roundContent");
 const setupNote = document.getElementById("setupNote");
 const gameCard = document.getElementById("gameCard");
@@ -36,6 +59,7 @@ let dailyCharacters = [];
 let dailyDate = "";
 let dailyState;
 let answer;
+let selectedMode = "";
 let storageUnavailable = false;
 
 function hashSeed(value) {
@@ -67,9 +91,9 @@ function shuffleForDate(items, date) {
     return shuffled;
 }
 
-function getDailyCharacters(date) {
+function getDailyCharacters(date, sourceCharacters, mode) {
     const seenNames = new Set();
-    const uniqueCharacters = characters.filter((character) => {
+    const uniqueCharacters = sourceCharacters.filter((character) => {
         const acceptedNames = [character.name, ...(character.aliases ?? [])]
             .map((name) => name.trim().toLocaleLowerCase());
         if (acceptedNames.some((name) => seenNames.has(name))) return false;
@@ -91,7 +115,18 @@ function getDailyCharacters(date) {
         const available = uniqueCharacters.filter(
             (character) => !recentlyUsed.has(character.image)
         );
-        const roster = shuffleForDate(available, currentDate).slice(0, dailyRoundCount);
+        const seed = `${mode}:reroll-${dailyRosterRevision}:${currentDate}`;
+        const roster = shuffleForDate(available, seed).slice(0, dailyRoundCount);
+
+        if (roster.length !== dailyRoundCount) {
+            const rosterImages = new Set(roster.map((character) => character.image));
+            const remaining = uniqueCharacters.filter(
+                (character) => !rosterImages.has(character.image)
+            );
+            roster.push(
+                ...shuffleForDate(remaining, seed).slice(0, dailyRoundCount - roster.length)
+            );
+        }
 
         if (roster.length !== dailyRoundCount) {
             throw new Error(`Not enough eligible characters to create the daily roster for ${currentDate}.`);
@@ -165,7 +200,7 @@ function restoreSavedRoster(state) {
     if (state.order.every((image, index) => image === dailyCharacters[index]?.image)) return;
 
     const savedCharacters = state.order.map(
-        (image) => characters.find((character) => character.image === image)
+        (image) => dailyCharacters.find((character) => character.image === image)
     );
     const savedImages = new Set(state.order);
     const savedNames = new Set();
@@ -183,17 +218,21 @@ function restoreSavedRoster(state) {
     }
 }
 
+function getDailyStorageKey() {
+    return `bugguesser-daily-${selectedMode}-r${dailyRosterRevision}-${dailyDate}`;
+}
+
 function saveDailyState() {
     if (storageUnavailable) return false;
 
     try {
-        localStorage.setItem(`bugguesser-daily-${dailyDate}`, JSON.stringify(dailyState));
+        localStorage.setItem(getDailyStorageKey(), JSON.stringify(dailyState));
         return true;
     } catch (error) {
         console.error("Could not save the daily Bugguesser attempt.", error);
         storageUnavailable = true;
         gameStatus.textContent =
-            "Daily progress could not be saved. The game is paused to avoid losing your one attempt.";
+            "Daily progress could not be saved. The game is paused to protect this attempt.";
         setRoundControlsDisabled(true);
         return false;
     }
@@ -261,7 +300,7 @@ function renderCurrentRound() {
     hintButton.disabled = dailyState.current.hints >= maxHintsPerRound;
     hintButton.hidden = false;
     hintButton.textContent = dailyState.current.hints === 0
-        ? "Reveal movement hint (−2 points)"
+        ? "Reveal hint (−2 points)"
         : "Reveal name pattern (−2 points)";
     revealNameButton.disabled = false;
     nextButton.hidden = true;
@@ -277,7 +316,7 @@ function appendHint(index) {
 
     if (index === 0) {
         question.textContent = hintQuestion;
-        answerText.textContent = answer.hints[0];
+        answerText.textContent = answer.hints?.[0] ?? "Study the character's silhouette.";
     } else {
         question.textContent = "Name pattern:";
         answerText.textContent = Array.from(answer.name, (character) =>
@@ -308,13 +347,13 @@ function renderResolvedRound() {
         revealedName.className = "revealed-name";
         revealedName.textContent = result.name;
         gameStatus.replaceChildren(
-            "The bug was ",
+            "The character was ",
             revealedName,
             `. 10 points deducted. ${result.guesses} ${result.guesses === 1 ? "guess" : "guesses"} and `
             + `${result.hints} ${result.hints === 1 ? "hint" : "hints"} used.`
         );
     } else {
-        gameStatus.textContent = `Could not load ${result.name}'s sprite. This round was skipped.`;
+        gameStatus.textContent = `Could not load ${result.name}'s image. This round was skipped.`;
     }
 
     if (dailyState.finished) {
@@ -324,7 +363,7 @@ function renderResolvedRound() {
         return;
     }
 
-    nextButton.textContent = "Next bug";
+    nextButton.textContent = "Next character";
     nextButton.hidden = false;
     nextButton.focus();
 }
@@ -333,7 +372,9 @@ function showDailySummary() {
     gameCard.hidden = true;
     setupNote.hidden = true;
     dailySummary.hidden = false;
-    summaryDate.textContent = `${dailyDate} (UTC)`;
+    document.getElementById("summaryTitle").textContent =
+        `${gameModes[selectedMode].title} complete`;
+    summaryDate.textContent = `${gameModes[selectedMode].title} · ${dailyDate} (UTC)`;
     dailySummaryBody.replaceChildren();
 
     for (const [index, result] of dailyState.results.entries()) {
@@ -360,7 +401,7 @@ function createDailySummaryText() {
     );
 
     return [
-        `Bugguesser - ${dailyDate} (UTC)`,
+        `Bugguesser - ${gameModes[selectedMode].title} - ${dailyDate} (UTC)`,
         `Score: ${dailyState.score} | Guesses: ${dailyState.totalGuesses} | Hints: ${dailyState.totalHints}`,
         "",
         ...rounds
@@ -539,59 +580,76 @@ nextButton.addEventListener("click", startNextRound);
 readyButton.addEventListener("click", startGame);
 copySummaryButton.addEventListener("click", copyDailySummary);
 
-const rosterIsValid = Array.isArray(characters)
-    && characters.length >= dailyRoundCount
-    && characters.every((character) =>
-        character
-        && typeof character.name === "string"
-        && character.name.trim()
-        && typeof character.image === "string"
-        && character.image.trim()
-        && Array.isArray(character.hints)
-        && character.hints.length === 1
-        && character.hints.every((hint) => typeof hint === "string" && hint.trim())
-    );
+function isValidRoster(characters) {
+    return Array.isArray(characters)
+        && characters.length >= dailyRoundCount
+        && characters.every((character) =>
+            character
+            && typeof character.name === "string"
+            && character.name.trim()
+            && typeof character.image === "string"
+            && character.image.trim()
+            && (!character.hints || (
+                Array.isArray(character.hints)
+                && character.hints.every((hint) => typeof hint === "string" && hint.trim())
+            ))
+        );
+}
 
-if (!rosterIsValid) {
-    gameReady.hidden = true;
-    roundContent.hidden = false;
-    gameStatus.textContent = "The roster is empty or contains invalid character data.";
-    setupNote.hidden = false;
-    roundElement.textContent = "0";
-} else {
-    dailyDate = new Date().toISOString().slice(0, 10);
-    dailyCharacters = getDailyCharacters(dailyDate);
-    setupNote.hidden = true;
+function selectGameMode(mode) {
+    const game = gameModes[mode];
+    if (!game) {
+        disableGame("This game mode is unavailable. Return to game selection and choose a Hollow Knight mode.");
+        return;
+    }
+
+    selectedMode = mode;
+    document.title = `${game.title} | Bugguesser`;
     document.getElementById("gameIntro").textContent =
-        ``;
+        `${game.title}: identify each character from its silhouette.`;
+    readyTitle.textContent = `Ready for ${game.title}?`;
+    readyCopy.textContent = "Your daily challenge is waiting. Start when you're ready.";
+    readyButton.disabled = false;
+    gameCard.hidden = false;
+    gameReady.hidden = false;
+    roundContent.hidden = true;
+    dailySummary.hidden = true;
+    setupNote.hidden = true;
+    copySummaryStatus.textContent = "";
 
+    if (!isValidRoster(game.characters)) {
+        disableGame("This game mode does not have enough valid character data yet.");
+        return;
+    }
+
+    dailyDate = new Date().toISOString().slice(0, 10);
+    dailyCharacters = getDailyCharacters(dailyDate, game.characters, mode);
     let storedState;
     try {
-        storedState = localStorage.getItem(`bugguesser-daily-${dailyDate}`);
+        storedState = localStorage.getItem(getDailyStorageKey());
         dailyState = storedState ? JSON.parse(storedState) : createInitialState();
     } catch (error) {
         console.error("Could not load the saved daily Bugguesser attempt.", error);
         disableGame("Saved daily progress could not be read. This attempt was not reset.");
+        return;
     }
 
-    if (dailyState) restoreSavedRoster(dailyState);
-
-    if (dailyState && !isValidDailyState(dailyState)) {
+    restoreSavedRoster(dailyState);
+    if (!isValidDailyState(dailyState)) {
         console.error("Saved daily Bugguesser attempt has an invalid format.");
         disableGame("Saved daily progress is invalid. This attempt was not reset.");
-    } else if (dailyState) {
-        if (!storedState && !saveDailyState()) {
-            disableGame("Daily progress could not be saved. The game is paused to protect your attempt.");
-        } else if (dailyState.finished) {
-            showDailySummary();
-        } else {
-            if (dailyState.current.outcome) {
-                gameReady.hidden = true;
-                roundContent.hidden = false;
-                renderCurrentRound();
-            } else {
-                gameStatus.textContent = "Your daily challenge is ready. Select Ready when you'd like to begin.";
-            }
-        }
+    } else if (!storedState && !saveDailyState()) {
+        disableGame("Daily progress could not be saved. The game is paused to protect your attempt.");
+    } else if (dailyState.finished) {
+        showDailySummary();
+    } else if (dailyState.current.outcome) {
+        gameReady.hidden = true;
+        roundContent.hidden = false;
+        renderCurrentRound();
+    } else {
+        gameStatus.textContent = "Your daily challenge is ready. Select Ready when you'd like to begin.";
     }
 }
+
+const requestedMode = new URLSearchParams(window.location.search).get("mode");
+selectGameMode(requestedMode);

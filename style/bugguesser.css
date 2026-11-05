@@ -5,6 +5,7 @@
 	--glow: #8db7b3;
 	--gold: #d5b77b;
 	--game-muted: #aab8bf;
+	--completed: #65c98f;
 }
 :root[data-theme="light"] {
 	--cavern: #e9efef;
@@ -13,6 +14,7 @@
 	--glow: #2e6666;
 	--gold: #81602b;
 	--game-muted: #52666a;
+	--completed: #27844d;
 }
 body {
 	background:
@@ -51,6 +53,133 @@ body {
 	margin: 12px 0 0;
 	color: var(--game-muted);
 	font-size: 1rem;
+}
+.back-to-games {
+	display: inline-block;
+	margin-top: 16px;
+	color: var(--glow);
+	font-size: .9rem;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+}
+.back-to-games:focus-visible {
+	outline: 2px solid var(--gold);
+	outline-offset: 3px;
+}
+.game-picker {
+	display: grid;
+	width: min(100%, 980px);
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 20px;
+}
+.game-edition {
+	padding: 22px;
+	border: 1px solid var(--stone);
+	border-radius: 14px;
+	background: linear-gradient(160deg, var(--cavern-light), var(--page-bg));
+	box-shadow: 0 22px 70px rgb(0 0 0 / 18%);
+}
+.game-edition h2 {
+	margin: 0;
+	color: var(--gold);
+	font-family: "Trajan Pro", Georgia, "Times New Roman", serif;
+	font-size: 1.45rem;
+	font-weight: 400;
+	text-align: center;
+}
+.game-title-divider {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin: 10px 0 14px;
+}
+.game-edition > p {
+	margin: 8px 0 18px;
+	color: var(--game-muted);
+	font-size: .9rem;
+}
+.game-mode-list {
+	display: grid;
+	gap: 10px;
+}
+.game-mode-option {
+	display: flex;
+	min-width: 0;
+	align-items: center;
+	gap: 10px;
+	padding-right: 8px;
+	border: 1px solid var(--stone);
+	border-radius: 8px;
+	background: var(--cavern);
+	transition: border-color .15s ease, background .15s ease;
+}
+.game-mode-option:hover {
+	border-color: var(--glow);
+	background: var(--surface-hover);
+}
+.game-mode-option.is-selected {
+	border-color: var(--gold);
+	background: var(--surface-hover);
+}
+.game-mode-option.is-completed {
+	border-color: var(--completed);
+	box-shadow: 0 0 0 1px var(--completed);
+}
+.game-mode-button {
+	display: flex;
+	min-width: 0;
+	min-height: 48px;
+	flex: 1;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 3px;
+	padding: 10px 14px;
+	border: 0;
+	border-radius: 7px;
+	background: transparent;
+	color: var(--text);
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+	transition: color .15s ease;
+}
+.game-mode-button:focus-visible {
+	outline: 2px solid var(--gold);
+	outline-offset: 2px;
+}
+.game-mode-button[aria-pressed="true"] {
+	color: var(--gold);
+}
+.game-mode-button .mode-selection-info {
+	color: var(--game-muted);
+	font-size: .75rem;
+	font-weight: 400;
+}
+.game-mode-button .mode-completion-info {
+	color: var(--completed);
+	font-size: .75rem;
+	font-weight: 600;
+}
+.game-mode-button:disabled {
+	color: var(--game-muted);
+	cursor: not-allowed;
+	opacity: .65;
+}
+.game-mode-button small {
+	font-size: .75rem;
+}
+.mode-play-button[hidden] {
+	display: none;
+}
+.mode-play-button {
+	display: inline-flex;
+	min-width: 86px;
+	min-height: 38px;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 12px;
+	text-decoration: none;
 }
 .game-card {
 	width: min(100%, 620px);
@@ -396,6 +525,8 @@ body {
 }
 @media (max-width: 600px) {
 	.game-shell { gap: 22px; padding: 38px 0 32px; }
+	.game-picker { grid-template-columns: 1fr; gap: 14px; }
+	.game-edition { padding: 18px; }
 	.game-card { padding: 16px; }
 	.daily-summary { padding: 18px 14px; }
 	.sprite-frame { min-height: 235px; }
