@@ -27,7 +27,9 @@ function updateCompletedModes() {
         }
 
         optionRow.classList.toggle("is-completed", isCompleted);
-        completionInfo.hidden = !isCompleted;
+        completionInfo.textContent = isCompleted
+            ? "Daily challenge completed"
+            : "Daily challenge not yet completed";
         playLink.textContent = isCompleted ? "View Results" : "Play";
         button.setAttribute(
             "aria-label",

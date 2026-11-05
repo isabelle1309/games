@@ -163,8 +163,12 @@ body {
 	font-weight: 400;
 }
 .game-mode-button .mode-completion-info {
-	color: var(--completed);
+	color: var(--game-muted);
 	font-size: .75rem;
+	font-weight: 400;
+}
+.game-mode-option.is-completed .mode-completion-info {
+	color: var(--completed);
 	font-weight: 600;
 }
 .game-mode-button:disabled {
