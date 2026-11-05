@@ -102,6 +102,12 @@ body {
 	display: grid;
 	gap: 10px;
 }
+.game-edition-fleur {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin-top: 18px;
+}
 .game-mode-option {
 	display: flex;
 	min-width: 0;
