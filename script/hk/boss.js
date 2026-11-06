@@ -192,7 +192,7 @@ export const characters = [
     {
         name: "Grimm",
         image: `${imageBase}b/ba/Grimm_Idle.png`,
-        aliases: ["Troupe Master Grimm"],
+        aliases: ["Troupe Master Grimm", "TMG"],
         hints: ["This bug walks and flies."]
     },
     // Nightmare_King_without_Essence.png

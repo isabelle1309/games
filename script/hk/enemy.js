@@ -461,6 +461,7 @@ export const characters = [
     {
         name: "Dirtcarver",
         image: `${imageBase}0/02/B_Dirtcarver.png`,
+        aliases: ["Carver"],
         hints: ["This bug walks."]
     },
     // B_Carver_Hatcher.png
@@ -623,6 +624,7 @@ export const characters = [
     {
         name: "Armoured Squit",
         image: `${imageBase}2/2c/B_Armoured_Squit.png`,
+        aliases: ["Armored Squits"],
         hints: ["This bug flies."]
     },
     // B_Battle_Obble.png
