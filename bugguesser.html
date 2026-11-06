@@ -92,10 +92,14 @@
 						<span>NPCs</span>
 						<small>Coming soon</small>
 					</button>
-					<button class="game-mode-button" type="button" disabled>
-						<span>Bosses</span>
-						<small>Coming soon</small>
-					</button>
+					<div class="game-mode-option">
+						<button class="game-mode-button" type="button" data-game-mode="hkss-bosses" aria-pressed="false">
+							<span>Bosses</span>
+							<small class="mode-selection-info" hidden></small>
+							<small class="mode-completion-info">Daily challenge not yet completed</small>
+						</button>
+						<a class="ready-button mode-play-button" data-play-link href="bugguesser-game.html" hidden>Play</a>
+					</div>
 					<button class="game-mode-button" type="button" disabled>
 						<span>NPCs &amp; bosses</span>
 						<small>Coming soon</small>

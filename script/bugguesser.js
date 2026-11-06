@@ -1,12 +1,13 @@
 import { characters as enemyCharacters } from "./hk/enemy.js";
 import { characters as npcCharacters } from "./hk/npc.js";
 import { characters as bossCharacters } from "./hk/boss.js";
+import { characters as hkssBossCharacters } from "./hkss/boss.js";
 
 const hintQuestion = "What should you notice?";
 const maxHintsPerRound = 2;
 const dailyRoundCount = 10;
 const dailyStateVersion = 1;
-const dailyRosterRevision = 3;
+const dailyRosterRevision = 4;
 // Keep the schedule reproducible for every visitor while applying the seven-day exclusion rule.
 const dailyScheduleStart = Date.UTC(2020, 0, 1);
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
@@ -26,6 +27,10 @@ const gameModes = {
     "hk-npcs-bosses": {
         title: "Hollow Knight - NPCs & bosses",
         characters: [...npcCharacters, ...bossCharacters]
+    },
+    "hkss-bosses": {
+        title: "Silksong - Bosses",
+        characters: hkssBossCharacters
     }
 };
 

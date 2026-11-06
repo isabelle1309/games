@@ -216,11 +216,6 @@ export const characters = [
         name: "Willoh",
         image: `${imageBase}thumb/4/43/Willoh.png/300px-Willoh.png`,
     },
-    // Salubra.png
-    {
-        name: "Salubra",
-        image: `${imageBase}thumb/e/ea/Salubra.png/299px-Salubra.png`,
-    },
     // Cornifer.png
     {
         name: "Cornifer",
@@ -247,4 +242,16 @@ export const characters = [
         name: "Leg Eater",
         image: `${imageBase}4/4a/Leg_Eater.png`,
     },
+    // QUEEN.png
+    {
+        name: "White Lady",
+        image: "images/hk/QUEEN.png",
+        hints: ["This bug is the mother of the vessels."]
+    },
+    // Salubra.png
+    {
+        name: "Salubra",
+        image: "images/hk/salubra.png",
+        hints: ["This bug is a vendor."]
+    }
 ];

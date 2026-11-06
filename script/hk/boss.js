@@ -249,10 +249,4 @@ export const characters = [
         image: `${imageBase}thumb/a/aa/Radiance_Idle.png/300px-Radiance_Idle.png`,
         hints: ["This bug flies."]
     },
-    // QUEEN.png
-    {
-        name: "White Lady",
-        image: "images/hk/QUEEN.png",
-        hints: ["This bug is the mother of the vessels."]
-    },
 ];

@@ -125,6 +125,7 @@ export const characters = [
     {
         name: "Summoned Saviour",
         image: `${imageBase}thumb/f/f9/B_Summoned_Saviour.png/300px-B_Summoned_Saviour.png`,
+        aliases: ["Summoned Savior"],
         hints: [bossHint]
     },
     {
