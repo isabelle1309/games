@@ -204,7 +204,7 @@ export const characters = [
     },
     // Nailmaster_Idle.png
     {
-        name: "Nailmaster",
+        name: "Oro or Mato",
         image: `${imageBase}thumb/5/52/Nailmaster_Idle.png/300px-Nailmaster_Idle.png`,
         aliases: ["Oro", "Mato", "Oro and Mato", "Oro & Mato"],
         hints: ["This bug walks."]

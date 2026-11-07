@@ -11,6 +11,7 @@ export const characters = [
     {
         name: "Iselda",
         image: `${imageBase}thumb/5/50/Iselda.png/300px-Iselda.png`,
+        aliases: ["Bapanada"],
     },
     // Nailsmith_Standing.png
     {
@@ -41,8 +42,8 @@ export const characters = [
     },
     // Mato.png
     {
-        name: "Nailmaster",
-        aliases: ["Oro", "Mato", "Oro and Mato", "Oro & Mato"],
+        name: "Oro or Mato",
+        aliases: ["Oro", "Mato", "Oro and Mato", "Oro & Mato", "Nailmaster"],
         image: `${imageBase}thumb/6/61/Mato.png/300px-Mato.png`,
     },
     // Nailmaster_Sheo.png
@@ -70,6 +71,7 @@ export const characters = [
     {
         name: "Zote",
         image: `${imageBase}e/ee/Zote_Idle.png`,
+        aliases: ["Zote the Mighty"],
     },
     // Tiso.png
     {
