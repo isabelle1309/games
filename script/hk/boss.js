@@ -189,6 +189,7 @@ export const characters = [
     {
         name: "Hornet",
         image: `${imageBase}1/16/Hornet_Idle.png`,
+        aliases: ["Hornet Sentinel", "Garrama"],
     },
     // The_Hollow_Knight_Idle.png
     {
