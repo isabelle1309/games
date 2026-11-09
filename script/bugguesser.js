@@ -381,7 +381,8 @@ function createCharacterName(name, className = "") {
     tooltip.id = tooltipId;
     tooltip.className = "character-name-aliases";
     tooltip.setAttribute("role", "tooltip");
-    tooltip.textContent = `Aliases: ${character.aliases.join(", ")}`;
+    const aliasLabel = character.aliases.length === 1 ? "Alias" : "Aliases";
+    tooltip.textContent = `${aliasLabel}: ${character.aliases.join(", ")}`;
     nameTooltip.addEventListener("pointerenter", () => {
         clearTimeout(hideTimeout);
         showCharacterTooltip(nameTooltip, tooltip);
