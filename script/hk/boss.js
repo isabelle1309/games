@@ -59,7 +59,7 @@ export const characters = [
     {
         name: "Dung Defender",
         image: `${imageBase}7/76/Dung_Defender_Idle.png`,
-        aliases: ["White Defender"],
+        aliases: ["White Defender", "Ogrim"],
     },
     // B_Flukemarm.png
     {
@@ -78,14 +78,15 @@ export const characters = [
     },
     // Mawlek_Idle.png
     {
-        name: "Mawlek",
+        name: "Brooding Mawlek",
         image: `${imageBase}thumb/8/81/Mawlek_Idle.png/300px-Mawlek_Idle.png`,
-        aliases: ["Brooding Mawlek"],
+        aliases: ["Mawlek"],
     },
     // Broken_Vessel_Idle.png
     {
         name: "Broken Vessel",
         image: `${imageBase}5/57/Broken_Vessel_Idle.png`,
+        aliases: ["Lost Kin"],
     },
     // Hive_Knight_Idle.png
     {

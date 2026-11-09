@@ -165,7 +165,7 @@ export const characters = [
     // Dung_Defender_Idle.png
     {
         name: "Dung Defender",
-        aliases: ["White Defender"],
+        aliases: ["White Defender", "Ogrim"],
         image: `${imageBase}7/76/Dung_Defender_Idle.png`,
     },
     // Elderbug.png

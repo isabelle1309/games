@@ -1,6 +1,7 @@
+import { dailyRosterRevision, dailyStateVersion } from "./bugguesser-config.js";
+
 const modeButtons = document.querySelectorAll("[data-game-mode]");
 const dailyDate = new Date().toISOString().slice(0, 10);
-const dailyRosterRevision = 4;
 
 function updateCompletedModes() {
     for (const button of modeButtons) {
@@ -18,7 +19,7 @@ function updateCompletedModes() {
             );
             if (savedState !== null) {
                 const state = JSON.parse(savedState);
-                isCompleted = state?.version === 1
+                isCompleted = state?.version === dailyStateVersion
                     && state.date === dailyDate
                     && state.finished === true;
             }
