@@ -549,36 +549,21 @@ function submitGuess(event) {
     dailyState.totalGuesses++;
     updateStats();
 
-    if (!isCorrectGuess(guess)) {
+    const acceptedNames = [answer.name, ...(answer.aliases ?? [])];
+    const isCorrect = acceptedNames.some(
+        (name) => guess.toLocaleLowerCase() === name.toLocaleLowerCase()
+    );
+
+    if (!isCorrect) {
         gameStatus.textContent = "Not quite. Try another name, or reveal a character.";
         saveDailyState();
         guessInput.select();
         return;
     }
 
-    resolveCorrectGuess();
-}
-
-function isCorrectGuess(guess) {
-    const acceptedNames = [answer.name, ...(answer.aliases ?? [])];
-    return acceptedNames.some(
-        (name) => guess.toLocaleLowerCase() === name.toLocaleLowerCase()
-    );
-}
-
-function resolveCorrectGuess() {
     const pointsEarned = Math.max(0, 10 - dailyState.current.charactersRevealed * 2);
     dailyState.score += pointsEarned;
     resolveRound("correct", pointsEarned);
-}
-
-function checkTypedGuess() {
-    if (dailyState.current.outcome || !isCorrectGuess(guessInput.value.trim())) return;
-
-    dailyState.current.guesses++;
-    dailyState.totalGuesses++;
-    updateStats();
-    resolveCorrectGuess();
 }
 
 function revealNextCharacter() {
@@ -634,7 +619,6 @@ function startGame() {
 sprite.addEventListener("error", handleSpriteError);
 sprite.addEventListener("load", () => sprite.classList.add("is-visible"));
 guessForm.addEventListener("submit", submitGuess);
-guessInput.addEventListener("input", checkTypedGuess);
 revealCharacterButton.addEventListener("click", revealNextCharacter);
 revealNameButton.addEventListener("click", revealName);
 nextButton.addEventListener("click", startNextRound);
