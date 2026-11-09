@@ -12,6 +12,7 @@ export const characters = [
     {
         name: "Great Conchfly",
         image: `${imageBase}thumb/2/28/B_Great_Conchfly.png/300px-B_Great_Conchfly.png`,
+        aliases: ["Raging Conchfly"],
     },
     {
         name: "Lace",
