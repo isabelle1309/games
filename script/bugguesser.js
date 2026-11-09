@@ -5,7 +5,7 @@ import { characters as hkssBossCharacters } from "./hkss/boss.js";
 
 const dailyRoundCount = 10;
 const dailyStateVersion = 1;
-const dailyRosterRevision = 4;
+const dailyRosterRevision = 5;
 // Keep the schedule reproducible for every visitor while applying the seven-day exclusion rule.
 const dailyScheduleStart = Date.UTC(2020, 0, 1);
 const summaryNumberStart = Date.UTC(2026, 10, 9);
