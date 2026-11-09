@@ -121,12 +121,6 @@ export const characters = [
         aliases: ["Oblobbles"],
         hints: ["This bug flies."]
     },
-    // Volt_Twister_Idle.png
-    {
-        name: "Volt Twister",
-        image: `${imageBase}8/87/Volt_Twister_Idle.png`,
-        hints: ["This bug floats."]
-    },
     // B_God_Tamer.png
     {
         name: "God Tamer",

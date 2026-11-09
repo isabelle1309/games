@@ -741,4 +741,10 @@ export const characters = [
         image: `${imageBase}a/af/Shade_Idle.png`,
         hints: ["This bug floats."]
     },
+    // Volt_Twister_Idle.png
+    {
+        name: "Volt Twister",
+        image: `${imageBase}8/87/Volt_Twister_Idle.png`,
+        hints: ["This bug floats."]
+    },
 ];
