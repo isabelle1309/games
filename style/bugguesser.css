@@ -463,11 +463,11 @@ body {
 	margin: 20px 0;
 	color: var(--text);
 	font: inherit;
+	font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
 	line-height: 1.6;
 	text-align: center;
 	white-space: pre-wrap;
 	overflow-wrap: anywhere;
-	text-align: center;
 }
 .summary-copy {
 	margin: 0 0 18px;
