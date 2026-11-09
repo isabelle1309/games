@@ -3,33 +3,37 @@ import { characters as npcCharacters } from "./hk/npc.js";
 import { characters as bossCharacters } from "./hk/boss.js";
 import { characters as hkssBossCharacters } from "./hkss/boss.js";
 
-const hintQuestion = "What should you notice?";
-const maxHintsPerRound = 2;
 const dailyRoundCount = 10;
 const dailyStateVersion = 1;
 const dailyRosterRevision = 4;
 // Keep the schedule reproducible for every visitor while applying the seven-day exclusion rule.
 const dailyScheduleStart = Date.UTC(2020, 0, 1);
+const summaryNumberStart = Date.UTC(2026, 10, 9);
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 const gameModes = {
     "hk-enemies": {
         title: "Hollow Knight - Enemies",
+        summaryTitle: "HK Enemies",
         characters: enemyCharacters
     },
     "hk-npcs": {
         title: "Hollow Knight - NPCs",
+        summaryTitle: "HK NPCs",
         characters: npcCharacters
     },
     "hk-bosses": {
         title: "Hollow Knight - Bosses",
+        summaryTitle: "HK Bosses",
         characters: bossCharacters
     },
     "hk-npcs-bosses": {
         title: "Hollow Knight - NPCs & bosses",
+        summaryTitle: "HK NPCs & Bosses",
         characters: [...npcCharacters, ...bossCharacters]
     },
     "hkss-bosses": {
         title: "Silksong - Bosses",
+        summaryTitle: "Silksong Bosses",
         characters: hkssBossCharacters
     }
 };
@@ -37,14 +41,14 @@ const gameModes = {
 const scoreElement = document.getElementById("score");
 const roundElement = document.getElementById("round");
 const guessCountElement = document.getElementById("guessCount");
-const hintCountElement = document.getElementById("hintCount");
+const characterRevealCountElement = document.getElementById("characterRevealCount");
 const sprite = document.getElementById("characterSprite");
 const gameStatus = document.getElementById("gameStatus");
 const guessForm = document.getElementById("guessForm");
 const guessInput = document.getElementById("guessInput");
 const guessButton = guessForm.querySelector("button");
-const hintsList = document.getElementById("hintsList");
-const hintButton = document.getElementById("hintButton");
+const namePattern = document.getElementById("namePattern");
+const revealCharacterButton = document.getElementById("revealCharacterButton");
 const revealNameButton = document.getElementById("revealNameButton");
 const nextButton = document.getElementById("nextButton");
 const gameReady = document.getElementById("gameReady");
@@ -57,6 +61,7 @@ const gameCard = document.getElementById("gameCard");
 const dailySummary = document.getElementById("dailySummary");
 const dailySummaryBody = document.getElementById("dailySummaryBody");
 const summaryDate = document.getElementById("summaryDate");
+const summaryShareText = document.getElementById("summaryShareText");
 const copySummaryButton = document.getElementById("copySummaryButton");
 const copySummaryStatus = document.getElementById("copySummaryStatus");
 
@@ -151,12 +156,12 @@ function createInitialState() {
         round: 0,
         score: 0,
         totalGuesses: 0,
-        totalHints: 0,
+        totalCharactersRevealed: 0,
         results: [],
         current: {
             startedAt: null,
             guesses: 0,
-            hints: 0,
+            charactersRevealed: 0,
             outcome: null,
             points: 0
         },
@@ -176,7 +181,7 @@ function isValidDailyState(state) {
         && state.round < dailyRoundCount
         && Number.isFinite(state.score)
         && Number.isInteger(state.totalGuesses)
-        && Number.isInteger(state.totalHints)
+        && Number.isInteger(state.totalCharactersRevealed)
         && Array.isArray(state.results)
         && state.results.length === state.round + (state.current?.outcome ? 1 : 0)
         && state.results.every((result) =>
@@ -184,15 +189,19 @@ function isValidDailyState(state) {
             && typeof result.name === "string"
             && Number.isFinite(result.elapsedMs)
             && Number.isInteger(result.guesses)
-            && Number.isInteger(result.hints)
+            && Number.isInteger(result.charactersRevealed)
+            && result.charactersRevealed >= 0
+            && result.charactersRevealed <= getRevealableCharacterCount(result.name)
             && ["correct", "revealed", "skipped"].includes(result.outcome)
         )
         && state.current
         && (state.current.startedAt === null || Number.isFinite(state.current.startedAt))
         && Number.isInteger(state.current.guesses)
-        && Number.isInteger(state.current.hints)
-        && state.current.hints >= 0
-        && state.current.hints <= maxHintsPerRound
+        && Number.isInteger(state.current.charactersRevealed)
+        && state.current.charactersRevealed >= 0
+        && state.current.charactersRevealed <= getRevealableCharacterCount(
+            dailyCharacters[state.round]?.name ?? ""
+        )
         && [null, "correct", "revealed", "skipped"].includes(state.current.outcome)
         && Number.isFinite(state.current.points)
         && typeof state.finished === "boolean"
@@ -223,6 +232,26 @@ function restoreSavedRoster(state) {
     }
 }
 
+function migrateSavedState(state) {
+    if (!state || typeof state !== "object" || !Object.hasOwn(state, "totalHints")) {
+        return state;
+    }
+
+    const { totalHints, current, results, ...stateWithoutLegacyCount } = state;
+    const migrateRound = (round) => {
+        if (!round || typeof round !== "object") return round;
+        const { hints, ...roundWithoutLegacyCount } = round;
+        return { ...roundWithoutLegacyCount, charactersRevealed: hints };
+    };
+
+    return {
+        ...stateWithoutLegacyCount,
+        totalCharactersRevealed: totalHints,
+        current: migrateRound(current),
+        results: Array.isArray(results) ? results.map(migrateRound) : results
+    };
+}
+
 function getDailyStorageKey() {
     return `bugguesser-daily-${selectedMode}-r${dailyRosterRevision}-${dailyDate}`;
 }
@@ -246,7 +275,7 @@ function saveDailyState() {
 function setRoundControlsDisabled(disabled) {
     guessInput.disabled = disabled;
     guessButton.disabled = disabled;
-    hintButton.disabled = disabled;
+    revealCharacterButton.disabled = disabled;
     revealNameButton.disabled = disabled;
     nextButton.disabled = disabled;
 }
@@ -255,7 +284,11 @@ function updateStats() {
     scoreElement.textContent = String(dailyState.score);
     roundElement.textContent = `${dailyState.round + 1} / ${dailyRoundCount}`;
     guessCountElement.textContent = String(dailyState.totalGuesses);
-    hintCountElement.textContent = String(dailyState.totalHints);
+    characterRevealCountElement.textContent = String(dailyState.totalCharactersRevealed);
+}
+
+function getRevealableCharacterCount(name) {
+    return Array.from(name).filter((character) => character.trim() !== "").length;
 }
 
 function fadeOutSprite() {
@@ -284,11 +317,7 @@ function renderCurrentRound() {
     sprite.alt = "Black silhouette of a character";
     sprite.src = answer.image;
     guessForm.reset();
-    hintsList.replaceChildren();
-
-    for (let index = 0; index < dailyState.current.hints; index++) {
-        appendHint(index);
-    }
+    renderNamePattern();
 
     if (sprite.complete && sprite.naturalWidth > 0) {
         requestAnimationFrame(() => sprite.classList.add("is-visible"));
@@ -302,36 +331,29 @@ function renderCurrentRound() {
     gameStatus.textContent = "Type your guess. Guesses are not case-sensitive.";
     guessInput.disabled = false;
     guessButton.disabled = false;
-    hintButton.disabled = dailyState.current.hints >= maxHintsPerRound;
-    hintButton.hidden = false;
-    hintButton.textContent = dailyState.current.hints === 0
-        ? "Reveal hint (−2 points)"
-        : "Reveal name pattern (−2 points)";
+    revealCharacterButton.disabled =
+        dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name);
     revealNameButton.disabled = false;
     nextButton.hidden = true;
     guessInput.focus();
 }
 
-function appendHint(index) {
-    const hint = document.createElement("li");
-    const question = document.createElement("span");
-    const answerText = document.createElement("strong");
-    question.className = "hint-question";
-    answerText.className = "hint-answer";
-
-    if (index === 0) {
-        question.textContent = hintQuestion;
-        answerText.textContent = answer.hints?.[0] ?? "Study the character's silhouette.";
-    } else {
-        question.textContent = "Name pattern:";
-        answerText.textContent = Array.from(answer.name, (character) =>
-            character === " " ? " " : "_"
-        ).join("");
-        answerText.classList.add("name-pattern");
+function renderNamePattern() {
+    let remainingCharacters = dailyState.current.charactersRevealed;
+    if (remainingCharacters === 0) {
+        namePattern.textContent = "?";
+        return;
     }
 
-    hint.append(question, " ", answerText);
-    hintsList.append(hint);
+    const pattern = Array.from(answer.name, (character) => {
+        if (character.trim() === "") return character;
+        if (remainingCharacters > 0) {
+            remainingCharacters--;
+            return character;
+        }
+        return "_";
+    }).join("");
+    namePattern.textContent = pattern;
 }
 
 function renderResolvedRound() {
@@ -339,14 +361,14 @@ function renderResolvedRound() {
     sprite.classList.add("is-revealed");
     guessInput.disabled = true;
     guessButton.disabled = true;
-    hintButton.disabled = true;
+    revealCharacterButton.disabled = true;
     revealNameButton.disabled = true;
     nextButton.disabled = false;
 
     if (result.outcome === "correct") {
         gameStatus.textContent =
             `Correct! ${result.name} — ${result.guesses} ${result.guesses === 1 ? "guess" : "guesses"}, `
-            + `${result.hints} ${result.hints === 1 ? "hint" : "hints"} used. +${result.points} points.`;
+            + `${result.charactersRevealed} ${result.charactersRevealed === 1 ? "character" : "characters"} revealed. +${result.points} points.`;
     } else if (result.outcome === "revealed") {
         const revealedName = document.createElement("strong");
         revealedName.className = "revealed-name";
@@ -355,7 +377,7 @@ function renderResolvedRound() {
             "The character was ",
             revealedName,
             `. 10 points deducted. ${result.guesses} ${result.guesses === 1 ? "guess" : "guesses"} and `
-            + `${result.hints} ${result.hints === 1 ? "hint" : "hints"} used.`
+            + `${result.charactersRevealed} ${result.charactersRevealed === 1 ? "character" : "characters"} revealed.`
         );
     } else {
         gameStatus.textContent = `Could not load ${result.name}'s image. This round was skipped.`;
@@ -380,6 +402,7 @@ function showDailySummary() {
     document.getElementById("summaryTitle").textContent =
         `${gameModes[selectedMode].title} complete`;
     summaryDate.textContent = `${gameModes[selectedMode].title} · ${dailyDate} (UTC)`;
+    summaryShareText.textContent = createDailySummaryText();
     dailySummaryBody.replaceChildren();
 
     for (const [index, result] of dailyState.results.entries()) {
@@ -388,28 +411,46 @@ function showDailySummary() {
         const nameCell = document.createElement("td");
         const timeCell = document.createElement("td");
         const guessesCell = document.createElement("td");
-        const hintsCell = document.createElement("td");
+        const charactersRevealedCell = document.createElement("td");
 
         roundCell.textContent = `${index + 1}.`;
         nameCell.textContent = result.name;
         timeCell.textContent = formatDuration(result.elapsedMs);
         guessesCell.textContent = String(result.guesses);
-        hintsCell.textContent = String(result.hints);
-        row.append(roundCell, nameCell, timeCell, guessesCell, hintsCell);
+        charactersRevealedCell.textContent = String(result.charactersRevealed);
+        row.append(roundCell, nameCell, timeCell, guessesCell, charactersRevealedCell);
         dailySummaryBody.append(row);
     }
 }
 
+function getRoundResultEmoji(result) {
+    if (result.outcome === "revealed") return "❌";
+    if (result.outcome === "skipped") return "⏭️";
+    if (result.charactersRevealed > 0) return "💡";
+    return "🟩";
+}
+
 function createDailySummaryText() {
-    const rounds = dailyState.results.map((result, index) =>
-        `${index + 1}. ${formatDuration(result.elapsedMs)}, ${result.guesses}, ${result.hints}`
+    const totalElapsedMs = dailyState.results.reduce(
+        (total, result) => total + result.elapsedMs,
+        0
+    );
+    const challengeNumber = Math.floor(
+        (Date.parse(`${dailyDate}T00:00:00.000Z`) - summaryNumberStart) / millisecondsPerDay
+    ) + 1;
+    const resultRows = [0, 1].map((rowIndex) =>
+        dailyState.results
+            .slice(rowIndex * 5, rowIndex * 5 + 5)
+            .map(getRoundResultEmoji)
+            .join("")
     );
 
     return [
-        `Bugguesser - ${gameModes[selectedMode].title} - ${dailyDate} (UTC)`,
-        `Score: ${dailyState.score} | Guesses: ${dailyState.totalGuesses} | Hints: ${dailyState.totalHints}`,
+        `BugGuesser #${challengeNumber}`,
+        `${gameModes[selectedMode].summaryTitle} in ${formatDuration(totalElapsedMs)}`,
+        `Guesses: ${dailyState.totalGuesses} | Score: ${dailyState.score}`,
         "",
-        ...rounds
+        ...resultRows,
     ].join("\n");
 }
 
@@ -469,7 +510,7 @@ async function startNextRound() {
     dailyState.current = {
         startedAt: Date.now(),
         guesses: 0,
-        hints: 0,
+        charactersRevealed: 0,
         outcome: null,
         points: 0
     };
@@ -487,7 +528,7 @@ function resolveRound(outcome, points = 0) {
         name: answer.name,
         elapsedMs: Math.max(0, Date.now() - dailyState.current.startedAt),
         guesses: dailyState.current.guesses,
-        hints: dailyState.current.hints,
+        charactersRevealed: dailyState.current.charactersRevealed,
         outcome,
         points
     };
@@ -508,36 +549,50 @@ function submitGuess(event) {
     dailyState.totalGuesses++;
     updateStats();
 
-    const acceptedNames = [answer.name, ...(answer.aliases ?? [])];
-    const isCorrect = acceptedNames.some(
-        (name) => guess.toLocaleLowerCase() === name.toLocaleLowerCase()
-    );
-
-    if (!isCorrect) {
-        gameStatus.textContent = "Not quite. Try another name, or reveal a hint.";
+    if (!isCorrectGuess(guess)) {
+        gameStatus.textContent = "Not quite. Try another name, or reveal a character.";
         saveDailyState();
         guessInput.select();
         return;
     }
 
-    const pointsEarned = Math.max(0, 10 - dailyState.current.hints * 2);
+    resolveCorrectGuess();
+}
+
+function isCorrectGuess(guess) {
+    const acceptedNames = [answer.name, ...(answer.aliases ?? [])];
+    return acceptedNames.some(
+        (name) => guess.toLocaleLowerCase() === name.toLocaleLowerCase()
+    );
+}
+
+function resolveCorrectGuess() {
+    const pointsEarned = Math.max(0, 10 - dailyState.current.charactersRevealed * 2);
     dailyState.score += pointsEarned;
     resolveRound("correct", pointsEarned);
 }
 
-function revealHint() {
-    if (dailyState.current.outcome || dailyState.current.hints >= maxHintsPerRound) return;
+function checkTypedGuess() {
+    if (dailyState.current.outcome || !isCorrectGuess(guessInput.value.trim())) return;
 
-    appendHint(dailyState.current.hints);
-    dailyState.current.hints++;
-    dailyState.totalHints++;
+    dailyState.current.guesses++;
+    dailyState.totalGuesses++;
     updateStats();
-    if (dailyState.current.hints === maxHintsPerRound) {
-        hintButton.disabled = true;
-        hintButton.textContent = "No more hints";
-    } else {
-        hintButton.textContent = "Reveal name pattern (−2 points)";
-    }
+    resolveCorrectGuess();
+}
+
+function revealNextCharacter() {
+    if (
+        dailyState.current.outcome
+        || dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name)
+    ) return;
+
+    dailyState.current.charactersRevealed++;
+    dailyState.totalCharactersRevealed++;
+    updateStats();
+    renderNamePattern();
+    revealCharacterButton.disabled =
+        dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name);
     saveDailyState();
 }
 
@@ -579,7 +634,8 @@ function startGame() {
 sprite.addEventListener("error", handleSpriteError);
 sprite.addEventListener("load", () => sprite.classList.add("is-visible"));
 guessForm.addEventListener("submit", submitGuess);
-hintButton.addEventListener("click", revealHint);
+guessInput.addEventListener("input", checkTypedGuess);
+revealCharacterButton.addEventListener("click", revealNextCharacter);
 revealNameButton.addEventListener("click", revealName);
 nextButton.addEventListener("click", startNextRound);
 readyButton.addEventListener("click", startGame);
@@ -594,10 +650,6 @@ function isValidRoster(characters) {
             && character.name.trim()
             && typeof character.image === "string"
             && character.image.trim()
-            && (!character.hints || (
-                Array.isArray(character.hints)
-                && character.hints.every((hint) => typeof hint === "string" && hint.trim())
-            ))
         );
 }
 
@@ -632,7 +684,9 @@ function selectGameMode(mode) {
     let storedState;
     try {
         storedState = localStorage.getItem(getDailyStorageKey());
-        dailyState = storedState ? JSON.parse(storedState) : createInitialState();
+        dailyState = storedState
+            ? migrateSavedState(JSON.parse(storedState))
+            : createInitialState();
     } catch (error) {
         console.error("Could not load the saved daily Bugguesser attempt.", error);
         disableGame("Saved daily progress could not be read. This attempt was not reset.");

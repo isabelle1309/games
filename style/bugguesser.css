@@ -128,8 +128,10 @@ body {
 	background: var(--surface-hover);
 }
 .game-mode-option.is-completed {
-	border-color: var(--completed);
-	box-shadow: 0 0 0 1px var(--completed);
+	border: 2px solid var(--completed);
+}
+.game-mode-option.is-completed .game-mode-button {
+	border-radius: 6px;
 }
 .game-mode-button {
 	display: flex;
@@ -312,7 +314,7 @@ body {
 	font-weight: 700;
 }
 .guess-form label,
-.hints-panel h2 {
+.name-pattern-panel h2 {
 	display: block;
 	margin: 0 0 8px;
 	color: var(--game-muted);
@@ -362,38 +364,33 @@ body {
 	outline-offset: 2px;
 }
 .guess-button:disabled,
-.hint-button:disabled { cursor: default; opacity: .6; }
-.hints-panel {
+.name-button:disabled { cursor: default; opacity: .6; }
+.name-pattern-panel {
 	margin-top: 22px;
 	padding-top: 16px;
 	border-top: 1px solid var(--stone);
 }
-.hints-panel h2 {
+.name-pattern-line {
+	display: flex;
+	align-items: baseline;
+	gap: 10px;
+	margin-bottom: 12px;
+}
+.name-pattern-panel h2 {
+	margin: 0;
 	color: var(--gold);
 	text-transform: uppercase;
 	letter-spacing: .1em;
 }
-.hints-list {
-	display: grid;
-	gap: 8px;
-	margin: 0 0 12px;
-	padding-left: 24px;
-	color: var(--game-muted);
-}
-.hint-question {
-	color: var(--game-muted);
-}
-.hint-answer {
-	margin-left: 4px;
+.name-pattern-display {
+	margin: 0;
 	color: var(--glow);
 	font-weight: 700;
-}
-.hint-answer.name-pattern {
 	font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
 	letter-spacing: .08em;
 	white-space: pre;
 }
-.hint-button {
+.name-button {
 	min-height: 40px;
 	padding: 8px 12px;
 	border: 1px solid var(--stone);
@@ -412,11 +409,11 @@ body {
 	border-color: #c97878;
 	background: rgb(126 50 50 / 20%);
 }
-.hint-button:hover:not(:disabled) {
+.name-button:hover:not(:disabled) {
 	border-color: var(--glow);
 	background: var(--surface-hover);
 }
-.hint-button:focus-visible {
+.name-button:focus-visible {
 	outline: 2px solid var(--gold);
 	outline-offset: 2px;
 }
@@ -462,18 +459,15 @@ body {
 	color: var(--game-muted);
 	text-align: center;
 }
-.summary-stats {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	gap: 8px 24px;
-	margin: 18px 0;
-	color: var(--game-muted);
-}
-.summary-stats p { margin: 0; }
-.summary-stats strong {
-	margin-left: 5px;
-	color: var(--gold);
+.summary-share-text {
+	margin: 20px 0;
+	color: var(--text);
+	font: inherit;
+	line-height: 1.6;
+	text-align: center;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	text-align: center;
 }
 .summary-copy {
 	margin: 0 0 18px;

@@ -24,11 +24,6 @@ export const characters = [
         aliases: ["Lemm"],
         image: `${imageBase}b/be/Relic_Seeker_Lemm.png`,
     },
-    // Sly.png
-    {
-        name: "Sly",
-        image: `${imageBase}f/f9/Sly.png`,
-    },
     // Steel_Soul_Jinn.png
     {
         name: "Steel Soul Jinn",
@@ -40,17 +35,23 @@ export const characters = [
         name: "Tuk",
         image: `${imageBase}thumb/a/a1/Tuk.png/300px-Tuk.png`,
     },
-    // Mato.png
+    // Nailmaster_Idle.png
     {
         name: "Oro or Mato",
-        aliases: ["Oro", "Mato", "Oro and Mato", "Oro & Mato", "Nailmaster"],
-        image: `${imageBase}thumb/6/61/Mato.png/300px-Mato.png`,
+        image: `${imageBase}thumb/5/52/Nailmaster_Idle.png/300px-Nailmaster_Idle.png`,
+        aliases: ["Oro", "Mato", "Oro and Mato", "Oro & Mato", "Nailmaster Oro", "Nailmaster Mato", "Nailmasters"],
     },
-    // Nailmaster_Sheo.png
+    // Paintmaster_Idle.png
     {
-        name: "Nailmaster Sheo",
-        aliases: ["Sheo"],
-        image: `${imageBase}thumb/7/75/Nailmaster_Sheo.png/300px-Nailmaster_Sheo.png`,
+        name: "Sheo",
+        image: `${imageBase}thumb/e/e7/Paintmaster_Idle.png/300px-Paintmaster_Idle.png`,
+        aliases: ["Paintmaster Sheo", "Paintmaster"],
+    },
+    // Great_Nailsage_Sly_Idle.png
+    {
+        name: "Sly",
+        image: `${imageBase}thumb/2/26/Great_Nailsage_Sly_Idle.png/300px-Great_Nailsage_Sly_Idle.png`,
+        aliases: ["Great Nailsage Sly", "Nailsage Sly"],
     },
     // Cloth_Idle.png
     {
@@ -143,6 +144,7 @@ export const characters = [
     {
         name: "Grimm",
         image: `${imageBase}b/ba/Grimm_Idle.png`,
+        aliases: ["Troupe Master Grimm", "TMG"],
     },
     // Last_Stag.png
     {
@@ -248,12 +250,10 @@ export const characters = [
     {
         name: "White Lady",
         image: "images/hk/QUEEN.png",
-        hints: ["This bug is the mother of the vessels."]
     },
     // Salubra.png
     {
         name: "Salubra",
         image: "images/hk/salubra.png",
-        hints: ["This bug is a vendor."]
     }
 ];
