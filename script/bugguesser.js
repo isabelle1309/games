@@ -70,6 +70,8 @@ let dailyState;
 let answer;
 let selectedMode = "";
 let storageUnavailable = false;
+let characterNameTooltipId = 0;
+const characterTooltips = new Set();
 
 function hashSeed(value) {
     let hash = 2166136261;
@@ -310,6 +312,7 @@ function fadeOutSprite() {
 }
 
 function renderCurrentRound() {
+    hideCharacterTooltips();
     answer = dailyCharacters[dailyState.round];
     updateStats();
     sprite.classList.remove("is-revealed");
@@ -355,6 +358,84 @@ function renderNamePattern() {
     namePattern.textContent = pattern;
 }
 
+function createCharacterName(name, className = "") {
+    const character = dailyCharacters.find((entry) => entry.name === name);
+    if (!character?.aliases?.length) {
+        const plainName = document.createElement("span");
+        plainName.className = className;
+        plainName.textContent = name;
+        return plainName;
+    }
+
+    const nameTooltip = document.createElement("span");
+    const visibleName = document.createElement("span");
+    const tooltip = document.createElement("span");
+    const tooltipId = `character-name-tooltip-${++characterNameTooltipId}`;
+    let hideTimeout;
+
+    nameTooltip.className = "character-name-tooltip";
+    nameTooltip.tabIndex = 0;
+    nameTooltip.setAttribute("aria-describedby", tooltipId);
+    visibleName.className = className;
+    visibleName.textContent = name;
+    tooltip.id = tooltipId;
+    tooltip.className = "character-name-aliases";
+    tooltip.setAttribute("role", "tooltip");
+    tooltip.textContent = `Aliases: ${character.aliases.join(", ")}`;
+    nameTooltip.addEventListener("pointerenter", () => {
+        clearTimeout(hideTimeout);
+        showCharacterTooltip(nameTooltip, tooltip);
+    });
+    nameTooltip.addEventListener("pointerleave", () => {
+        hideTimeout = setTimeout(() => tooltip.classList.remove("is-visible"), 150);
+    });
+    nameTooltip.addEventListener("focus", () => {
+        showCharacterTooltip(nameTooltip, tooltip);
+    });
+    nameTooltip.addEventListener("blur", () => {
+        clearTimeout(hideTimeout);
+        tooltip.classList.remove("is-visible");
+    });
+    tooltip.addEventListener("pointerenter", () => clearTimeout(hideTimeout));
+    tooltip.addEventListener("pointerleave", () => {
+        hideTimeout = setTimeout(() => tooltip.classList.remove("is-visible"), 100);
+    });
+    nameTooltip.append(visibleName);
+    document.body.append(tooltip);
+    characterTooltips.add(tooltip);
+    return nameTooltip;
+}
+
+function hideCharacterTooltips() {
+    for (const tooltip of characterTooltips) {
+        tooltip.classList.remove("is-visible");
+        tooltip.remove();
+    }
+    characterTooltips.clear();
+}
+
+function showCharacterTooltip(trigger, tooltip) {
+    tooltip.classList.add("is-visible");
+    positionCharacterTooltip(trigger, tooltip);
+}
+
+function positionCharacterTooltip(trigger, tooltip) {
+    const triggerBounds = trigger.getBoundingClientRect();
+    const tooltipBounds = tooltip.getBoundingClientRect();
+    const edgePadding = 8;
+    const halfWidth = tooltipBounds.width / 2;
+    const center = triggerBounds.left + triggerBounds.width / 2;
+    const left = Math.max(
+        halfWidth + edgePadding,
+        Math.min(window.innerWidth - halfWidth - edgePadding, center)
+    );
+    const fitsAbove = triggerBounds.top >= tooltipBounds.height + edgePadding * 2;
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${fitsAbove ? triggerBounds.top - edgePadding : triggerBounds.bottom + edgePadding}px`;
+    tooltip.style.transform = fitsAbove ? "translate(-50%, -100%)" : "translate(-50%, 0)";
+}
+
 function renderResolvedRound() {
     const result = dailyState.results.at(-1);
     sprite.classList.add("is-revealed");
@@ -365,21 +446,25 @@ function renderResolvedRound() {
     nextButton.disabled = false;
 
     if (result.outcome === "correct") {
-        gameStatus.textContent =
-            `Correct! ${result.name} — ${result.guesses} ${result.guesses === 1 ? "guess" : "guesses"}, `
-            + `${result.charactersRevealed} ${result.charactersRevealed === 1 ? "character" : "characters"} revealed. +${result.points} points.`;
+        gameStatus.replaceChildren(
+            "Correct! ",
+            createCharacterName(result.name),
+            ` — ${result.guesses} ${result.guesses === 1 ? "guess" : "guesses"}, `
+            + `${result.charactersRevealed} ${result.charactersRevealed === 1 ? "character" : "characters"} revealed. +${result.points} points.`
+        );
     } else if (result.outcome === "revealed") {
-        const revealedName = document.createElement("strong");
-        revealedName.className = "revealed-name";
-        revealedName.textContent = result.name;
         gameStatus.replaceChildren(
             "The character was ",
-            revealedName,
+            createCharacterName(result.name, "revealed-name"),
             `. 10 points deducted. ${result.guesses} ${result.guesses === 1 ? "guess" : "guesses"} and `
             + `${result.charactersRevealed} ${result.charactersRevealed === 1 ? "character" : "characters"} revealed.`
         );
     } else {
-        gameStatus.textContent = `Could not load ${result.name}'s image. This round was skipped.`;
+        gameStatus.replaceChildren(
+            "Could not load ",
+            createCharacterName(result.name),
+            "'s image. This round was skipped."
+        );
     }
 
     if (dailyState.finished) {
@@ -413,7 +498,7 @@ function showDailySummary() {
         const charactersRevealedCell = document.createElement("td");
 
         roundCell.textContent = `${index + 1}.`;
-        nameCell.textContent = result.name;
+        nameCell.append(createCharacterName(result.name));
         timeCell.textContent = formatDuration(result.elapsedMs);
         guessesCell.textContent = String(result.guesses);
         charactersRevealedCell.textContent = String(result.charactersRevealed);
@@ -503,6 +588,7 @@ async function startNextRound() {
         return;
     }
 
+    hideCharacterTooltips();
     nextButton.disabled = true;
     await fadeOutSprite();
     dailyState.round++;

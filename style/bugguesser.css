@@ -313,6 +313,47 @@ body {
 	color: var(--gold);
 	font-weight: 700;
 }
+.character-name-tooltip {
+	position: relative;
+	display: inline-block;
+	cursor: help;
+	text-decoration-line: underline;
+	text-decoration-style: dotted;
+	text-underline-offset: 3px;
+}
+.character-name-tooltip:focus-visible {
+	border-radius: 2px;
+	outline: 2px solid var(--gold);
+	outline-offset: 3px;
+}
+.character-name-aliases {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 5;
+	width: max-content;
+	max-width: min(280px, 80vw);
+	padding: 8px 10px;
+	border: 1px solid var(--stone);
+	border-radius: 7px;
+	background: var(--cavern-light);
+	box-shadow: 0 8px 24px rgb(0 0 0 / 35%);
+	color: var(--text);
+	font-size: .82rem;
+	font-weight: 400;
+	line-height: 1.4;
+	text-align: left;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	opacity: 0;
+	pointer-events: auto;
+	visibility: hidden;
+	transition: opacity .12s ease, visibility .12s ease;
+}
+.character-name-aliases.is-visible {
+	opacity: 1;
+	visibility: visible;
+}
 .guess-form label,
 .name-pattern-panel h2 {
 	display: block;
