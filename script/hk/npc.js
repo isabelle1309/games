@@ -114,6 +114,7 @@ export const characters = [
     {
         name: "Grey Mourner",
         image: `${imageBase}thumb/3/3d/Grey_Mourner.png/300px-Grey_Mourner.png`,
+        aliases: ["Gray Mourner"],
     },
     // Snail_Shaman.png
     {

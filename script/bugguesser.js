@@ -527,7 +527,7 @@ function createDailySummaryText() {
         dailyState.results
             .slice(rowIndex * 5, rowIndex * 5 + 5)
             .map(getRoundResultEmoji)
-            .join("  ")
+            .join("")
     );
 
     return [

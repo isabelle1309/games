@@ -43,6 +43,7 @@ export const characters = [
     {
         name: "Soul Master",
         image: `${imageBase}thumb/0/0d/Soul_Master_Idle.png/300px-Soul_Master_Idle.png`,
+        aliases: ["Soul Tyrant"],
     },
     // Watcher_Knight_Idle.png
     {
@@ -118,7 +119,7 @@ export const characters = [
     {
         name: "Grey Prince Zote",
         image: `${imageBase}5/5a/Grey_Prince_Zote_Idle.png`,
-        aliases: ["gpz"],
+        aliases: ["gpz", "Gray Prince Zote"],
     },
     // Xero_Idle.png
     {
