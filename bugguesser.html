@@ -82,16 +82,20 @@
 			<section class="game-edition" aria-labelledby="silksongTitle">
 				<h2 id="silksongTitle">Silksong</h2>
 				<img class="game-title-divider" src="images/hk/hkss_hr.png" alt="" aria-hidden="true">
-				<p>Silksong character data is not available yet.</p>
+				<p>Choose a daily challenge:</p>
 				<div class="game-mode-list">
 					<button class="game-mode-button" type="button" disabled>
 						<span>Enemies</span>
 						<small>Coming soon</small>
 					</button>
-					<button class="game-mode-button" type="button" disabled>
-						<span>NPCs</span>
-						<small>Coming soon</small>
-					</button>
+					<div class="game-mode-option">
+						<button class="game-mode-button" type="button" data-game-mode="hkss-npcs" aria-pressed="false">
+							<span>NPCs</span>
+							<small class="mode-selection-info" hidden></small>
+							<small class="mode-completion-info">Daily challenge not yet completed</small>
+						</button>
+						<a class="ready-button mode-play-button" data-play-link href="bugguesser-game.html" hidden>Play</a>
+					</div>
 					<div class="game-mode-option">
 						<button class="game-mode-button" type="button" data-game-mode="hkss-bosses" aria-pressed="false">
 							<span>Bosses</span>
@@ -100,10 +104,14 @@
 						</button>
 						<a class="ready-button mode-play-button" data-play-link href="bugguesser-game.html" hidden>Play</a>
 					</div>
-					<button class="game-mode-button" type="button" disabled>
-						<span>NPCs &amp; bosses</span>
-						<small>Coming soon</small>
-					</button>
+					<div class="game-mode-option">
+						<button class="game-mode-button" type="button" data-game-mode="hkss-npcs-bosses" aria-pressed="false">
+							<span>NPCs &amp; bosses</span>
+							<small class="mode-selection-info" hidden></small>
+							<small class="mode-completion-info">Daily challenge not yet completed</small>
+						</button>
+						<a class="ready-button mode-play-button" data-play-link href="bugguesser-game.html" hidden>Play</a>
+					</div>
 				</div>
 				<img class="game-edition-fleur" src="images/hk/hkssfleur.png" alt="" aria-hidden="true">
 			</section>

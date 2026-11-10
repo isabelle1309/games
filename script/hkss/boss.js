@@ -37,6 +37,7 @@ export const characters = [
     {
         name: "Savage Beastfly",
         image: `${imageBase}thumb/6/68/B_Savage_Beastfly.png/300px-B_Savage_Beastfly.png`,
+        aliases: ["Beastfly"],
     },
     {
         name: "Sister Splinter",
@@ -174,7 +175,7 @@ export const characters = [
     {
         name: "Skarrsinger Karmelita",
         image: `${imageBase}thumb/7/71/B_Skarrsinger_Karmelita.png/300px-B_Skarrsinger_Karmelita.png`,
-        aliases: ["Karmelita"],
+        aliases: ["Karmelita", "Skarrsinger"],
     },
     {
         name: "Tormented Trobbio",

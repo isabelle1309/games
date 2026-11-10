@@ -1,6 +1,7 @@
 import { characters as enemyCharacters } from "./hk/enemy.js";
 import { characters as npcCharacters } from "./hk/npc.js";
 import { characters as bossCharacters } from "./hk/boss.js";
+import { characters as hkssNpcCharacters } from "./hkss/npc.js";
 import { characters as hkssBossCharacters } from "./hkss/boss.js";
 import { dailyRosterRevision, dailyStateVersion } from "./bugguesser-config.js";
 
@@ -34,6 +35,16 @@ const gameModes = {
         title: "Silksong - Bosses",
         summaryTitle: "Silksong Bosses",
         characters: hkssBossCharacters
+    },
+    "hkss-npcs": {
+        title: "Silksong - NPCs",
+        summaryTitle: "Silksong NPCs",
+        characters: hkssNpcCharacters
+    },
+    "hkss-npcs-bosses": {
+        title: "Silksong - NPCs & bosses",
+        summaryTitle: "Silksong NPCs & Bosses",
+        characters: [...hkssNpcCharacters, ...hkssBossCharacters]
     }
 };
 
@@ -102,11 +113,16 @@ function shuffleForDate(items, date) {
     return shuffled;
 }
 
+function getAcceptedNames(character) {
+    return [character.name, ...(character.aliases ?? [])]
+        .map((name) => name.trim().toLocaleLowerCase())
+        .filter(Boolean);
+}
+
 function getDailyCharacters(date, sourceCharacters, mode) {
     const seenNames = new Set();
     const uniqueCharacters = sourceCharacters.filter((character) => {
-        const acceptedNames = [character.name, ...(character.aliases ?? [])]
-            .map((name) => name.trim().toLocaleLowerCase());
+        const acceptedNames = getAcceptedNames(character);
         if (acceptedNames.some((name) => seenNames.has(name))) return false;
         acceptedNames.forEach((name) => seenNames.add(name));
         return true;
@@ -221,8 +237,7 @@ function restoreSavedRoster(state) {
     const savedNames = new Set();
     const hasUniqueNames = savedCharacters.every((character) => {
         if (!character) return false;
-        const names = [character.name, ...(character.aliases ?? [])]
-            .map((name) => name.trim().toLocaleLowerCase());
+        const names = getAcceptedNames(character);
         if (names.some((name) => savedNames.has(name))) return false;
         names.forEach((name) => savedNames.add(name));
         return true;
@@ -317,7 +332,7 @@ function renderCurrentRound() {
     updateStats();
     sprite.classList.remove("is-revealed");
     sprite.alt = "Black silhouette of a character";
-    sprite.src = answer.image;
+    sprite.src = answer.silhouette ?? answer.image;
     guessForm.reset();
     renderNamePattern();
 
@@ -439,6 +454,7 @@ function positionCharacterTooltip(trigger, tooltip) {
 
 function renderResolvedRound() {
     const result = dailyState.results.at(-1);
+    sprite.src = answer.image;
     sprite.classList.add("is-revealed");
     guessInput.disabled = true;
     guessButton.disabled = true;
@@ -635,10 +651,7 @@ function submitGuess(event) {
     dailyState.totalGuesses++;
     updateStats();
 
-    const acceptedNames = [answer.name, ...(answer.aliases ?? [])];
-    const isCorrect = acceptedNames.some(
-        (name) => guess.toLocaleLowerCase() === name.toLocaleLowerCase()
-    );
+    const isCorrect = getAcceptedNames(answer).includes(guess.toLocaleLowerCase());
 
     if (!isCorrect) {
         gameStatus.textContent = "Not quite. Try another name, or reveal a character.";
@@ -662,6 +675,11 @@ function revealNextCharacter() {
     dailyState.totalCharactersRevealed++;
     updateStats();
     renderNamePattern();
+    if (dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name)) {
+        revealName();
+        return;
+    }
+
     revealCharacterButton.disabled =
         dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name);
     saveDailyState();
@@ -726,7 +744,7 @@ function isValidRoster(characters) {
 function selectGameMode(mode) {
     const game = gameModes[mode];
     if (!game) {
-        disableGame("This game mode is unavailable. Return to game selection and choose a Hollow Knight mode.");
+        disableGame("This game mode is unavailable. Return to game selection and choose an available mode.");
         return;
     }
 

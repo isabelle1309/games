@@ -257,5 +257,11 @@ export const characters = [
     {
         name: "Salubra",
         image: "images/hk/salubra.png",
+    },
+    // hive queen vespa
+    {
+        name: "Hive Queen Vespa",
+        image: `${imageBase}f/f1/Vespa.png`,
+        aliases: ["Vespa", "Hive Queen"],
     }
 ];
