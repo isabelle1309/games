@@ -92,17 +92,14 @@ export const characters = [
     {
         name: "Pebb",
         image: `images/hkss/PEBB.png`,
-        aliases: [""]
     },
     {
         name: "Skynx",
         image: `images/hkss/SKYNX.png`,
-        aliases: [""]
     },
     {
         name: "Twelfth Architect",
         image: `images/hkss/TWELFTHARCHITECT.png`,
-        aliases: [""]
     },
     {
         name: "Gilly",
