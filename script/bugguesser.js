@@ -383,10 +383,12 @@ function createCharacterName(name, className = "") {
     const tooltip = document.createElement("span");
     const tooltipId = `character-name-tooltip-${++characterNameTooltipId}`;
     let hideTimeout;
+    let isPinned = false;
 
     nameTooltip.className = "character-name-tooltip";
     nameTooltip.tabIndex = 0;
     nameTooltip.setAttribute("aria-describedby", tooltipId);
+    nameTooltip.setAttribute("aria-expanded", "false");
     visibleName.className = className;
     visibleName.textContent = name;
     tooltip.id = tooltipId;
@@ -394,23 +396,38 @@ function createCharacterName(name, className = "") {
     tooltip.setAttribute("role", "tooltip");
     const aliasLabel = character.aliases.length === 1 ? "Alias" : "Aliases";
     tooltip.textContent = `${aliasLabel}: ${character.aliases.join(", ")}`;
+    const hideTooltip = () => {
+        tooltip.classList.remove("is-visible");
+        nameTooltip.setAttribute("aria-expanded", "false");
+    };
+
     nameTooltip.addEventListener("pointerenter", () => {
         clearTimeout(hideTimeout);
         showCharacterTooltip(nameTooltip, tooltip);
     });
     nameTooltip.addEventListener("pointerleave", () => {
-        hideTimeout = setTimeout(() => tooltip.classList.remove("is-visible"), 150);
+        if (!isPinned) hideTimeout = setTimeout(hideTooltip, 150);
+    });
+    nameTooltip.addEventListener("click", () => {
+        isPinned = !isPinned;
+        if (isPinned) {
+            clearTimeout(hideTimeout);
+            showCharacterTooltip(nameTooltip, tooltip);
+        } else {
+            hideTooltip();
+        }
     });
     nameTooltip.addEventListener("focus", () => {
         showCharacterTooltip(nameTooltip, tooltip);
     });
     nameTooltip.addEventListener("blur", () => {
         clearTimeout(hideTimeout);
-        tooltip.classList.remove("is-visible");
+        isPinned = false;
+        hideTooltip();
     });
     tooltip.addEventListener("pointerenter", () => clearTimeout(hideTimeout));
     tooltip.addEventListener("pointerleave", () => {
-        hideTimeout = setTimeout(() => tooltip.classList.remove("is-visible"), 100);
+        if (!isPinned) hideTimeout = setTimeout(hideTooltip, 100);
     });
     nameTooltip.append(visibleName);
     document.body.append(tooltip);
@@ -428,6 +445,7 @@ function hideCharacterTooltips() {
 
 function showCharacterTooltip(trigger, tooltip) {
     tooltip.classList.add("is-visible");
+    trigger.setAttribute("aria-expanded", "true");
     positionCharacterTooltip(trigger, tooltip);
 }
 
