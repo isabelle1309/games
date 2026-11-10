@@ -108,6 +108,9 @@ body {
 	height: auto;
 	margin-top: 18px;
 }
+:root[data-theme="light"] .game-edition-fleur, :root[data-theme="light"] .game-title-divider {
+	filter: invert(1);
+}
 .game-mode-option {
 	display: flex;
 	min-width: 0;
