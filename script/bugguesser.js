@@ -61,10 +61,6 @@ const namePattern = document.getElementById("namePattern");
 const revealCharacterButton = document.getElementById("revealCharacterButton");
 const revealNameButton = document.getElementById("revealNameButton");
 const nextButton = document.getElementById("nextButton");
-const gameReady = document.getElementById("gameReady");
-const readyButton = document.getElementById("readyButton");
-const readyTitle = document.getElementById("readyTitle");
-const readyCopy = document.getElementById("readyCopy");
 const roundContent = document.getElementById("roundContent");
 const setupNote = document.getElementById("setupNote");
 const gameCard = document.getElementById("gameCard");
@@ -698,16 +694,13 @@ function handleSpriteError() {
 }
 
 function disableGame(message) {
-    gameReady.hidden = true;
     roundContent.hidden = false;
     gameStatus.textContent = message;
     setRoundControlsDisabled(true);
 }
 
 function startGame() {
-    gameReady.hidden = true;
     roundContent.hidden = false;
-    readyButton.disabled = true;
 
     if (dailyState.current.startedAt === null) {
         dailyState.current.startedAt = Date.now();
@@ -726,7 +719,6 @@ guessForm.addEventListener("submit", submitGuess);
 revealCharacterButton.addEventListener("click", revealNextCharacter);
 revealNameButton.addEventListener("click", revealName);
 nextButton.addEventListener("click", startNextRound);
-readyButton.addEventListener("click", startGame);
 copySummaryButton.addEventListener("click", copyDailySummary);
 
 function isValidRoster(characters) {
@@ -752,11 +744,7 @@ function selectGameMode(mode) {
     document.title = `${game.title} | Bugguesser`;
     document.getElementById("gameIntro").textContent =
         `${game.title}: identify each character from its silhouette.`;
-    readyTitle.textContent = `Ready for ${game.title}?`;
-    readyCopy.textContent = "Your daily challenge is waiting. Start when you're ready.";
-    readyButton.disabled = false;
     gameCard.hidden = false;
-    gameReady.hidden = false;
     roundContent.hidden = true;
     dailySummary.hidden = true;
     setupNote.hidden = true;
@@ -790,11 +778,10 @@ function selectGameMode(mode) {
     } else if (dailyState.finished) {
         showDailySummary();
     } else if (dailyState.current.outcome) {
-        gameReady.hidden = true;
         roundContent.hidden = false;
         renderCurrentRound();
     } else {
-        gameStatus.textContent = "Your daily challenge is ready. Select Ready when you'd like to begin.";
+        startGame();
     }
 }
 
