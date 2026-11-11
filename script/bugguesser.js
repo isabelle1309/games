@@ -684,7 +684,7 @@ nextButton.addEventListener("click", startNextRound);
 copySummaryButton.addEventListener("click", copyDailySummary);
 window.visualViewport?.addEventListener("resize", () => {
     if (document.activeElement === guessInput) {
-        guessInput.scrollIntoView({ block: "center", behavior: "smooth" });
+        guessButton.scrollIntoView({ block: "center", behavior: "smooth" });
     }
 });
 
