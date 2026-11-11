@@ -70,6 +70,8 @@ const summaryDate = document.getElementById("summaryDate");
 const summaryShareText = document.getElementById("summaryShareText");
 const copySummaryButton = document.getElementById("copySummaryButton");
 const copySummaryStatus = document.getElementById("copySummaryStatus");
+const isAppleTouchDevice = /iPhone|iPad|iPod/.test(navigator.userAgent)
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
 let dailyCharacters = [];
 let dailyDate = "";
@@ -352,7 +354,7 @@ function renderCurrentRound() {
         dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name);
     revealNameButton.disabled = false;
     nextButton.hidden = true;
-    guessInput.focus();
+    if (!isAppleTouchDevice) guessInput.focus();
 }
 
 function renderNamePattern() {
