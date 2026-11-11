@@ -37,7 +37,6 @@ export const characters = [
     {
         name: "Savage Beastfly",
         image: `${imageBase}thumb/6/68/B_Savage_Beastfly.png/300px-B_Savage_Beastfly.png`,
-        aliases: ["Beastfly"],
     },
     {
         name: "Sister Splinter",

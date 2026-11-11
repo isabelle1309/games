@@ -154,14 +154,12 @@ export const characters = [
         image: `${imageBase}a/ae/Seamstress.png`,
     },
     {
-        name: "Chapel Maid Snail Shaman",
+        name: "Chapel Maid",
         image: `${imageBase}9/94/Chapel_Maid_Snail_Shaman.png`,
-        aliases: ["Chapel Maid", "Snail Shaman"],
     },
     {
-        name: "Bell Hermit Snail Shaman",
+        name: "Bell Hermit",
         image: `${imageBase}thumb/d/d1/Bell_Hermit_Snail_Shaman.png/300px-Bell_Hermit_Snail_Shaman.png`,
-        aliases: ["Bell Hermit", "Snail Shaman"],
     },
     {
         name: "Sprintmaster Swift",
@@ -192,7 +190,7 @@ export const characters = [
     {
         name: "Conductor Ballador",
         image: `${imageBase}thumb/e/e8/Conductor_Ballador_Corpse.png/300px-Conductor_Ballador_Corpse.png`,
-        aliases: ["Ballador", "Conductor"],
+        aliases: ["Ballador"],
     },
     {
         name: "Eva",
@@ -215,6 +213,7 @@ export const characters = [
     {
         name: "Pilby",
         image: `${imageBase}5/5f/Pilby.png`,
+        aliases: ["Little pilgrim"],
     },
     {
         name: "Pious Isamor",
@@ -223,7 +222,7 @@ export const characters = [
     {
         name: "Pondcatcher Reed",
         image: `${imageBase}f/f8/Pondcatcher_Reed.png`,
-        aliases: ["Reed", "Pondcatcher"],
+        aliases: ["Reed"],
     },
     {
         name: "Styx",

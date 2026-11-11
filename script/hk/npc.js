@@ -68,6 +68,7 @@ export const characters = [
     {
         name: "Mister Mushroom",
         image: `${imageBase}f/fc/Mister_Mushroom.png`,
+        aliases: ["Herald"],
     },
     // Zote_Idle.png
     {
@@ -252,6 +253,7 @@ export const characters = [
     {
         name: "White Lady",
         image: "images/hk/QUEEN.png",
+        aliases: ["Queen"],
     },
     // Salubra.png
     {
