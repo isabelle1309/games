@@ -682,10 +682,16 @@ revealCharacterButton.addEventListener("click", revealNextCharacter);
 revealNameButton.addEventListener("click", revealName);
 nextButton.addEventListener("click", startNextRound);
 copySummaryButton.addEventListener("click", copyDailySummary);
+let viewportScrollTimeout;
 window.visualViewport?.addEventListener("resize", () => {
-    if (document.activeElement === guessInput) {
-        guessButton.scrollIntoView({ block: "center", behavior: "smooth" });
-    }
+    if (document.activeElement !== guessInput) return;
+
+    clearTimeout(viewportScrollTimeout);
+    viewportScrollTimeout = setTimeout(() => {
+        if (document.activeElement === guessInput) {
+            guessButton.scrollIntoView({ block: "center", behavior: "instant" });
+        }
+    }, 100);
 });
 
 function isValidRoster(characters) {
