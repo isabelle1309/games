@@ -74,6 +74,10 @@ const summaryShareText = document.getElementById("summaryShareText");
 const copySummaryButton = document.getElementById("copySummaryButton");
 const copySummaryStatus = document.getElementById("copySummaryStatus");
 
+if ("virtualKeyboard" in navigator) {
+    navigator.virtualKeyboard.overlaysContent = false;
+}
+
 let dailyCharacters = [];
 let dailyDate = "";
 let dailyState;
