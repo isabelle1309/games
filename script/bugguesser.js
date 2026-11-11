@@ -344,6 +344,10 @@ function renderCurrentRound() {
     gameStatus.textContent = "Type your guess. Guesses are not case-sensitive.";
     guessInput.disabled = false;
     guessButton.disabled = false;
+    revealCharacterButton.textContent =
+        dailyState.current.charactersRevealed > 0
+            ? "Reveal letter (-2 points)"
+            : "Reveal name pattern (-2 points)";
     revealCharacterButton.disabled =
         dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name);
     revealNameButton.disabled = false;
@@ -352,21 +356,34 @@ function renderCurrentRound() {
 }
 
 function renderNamePattern() {
-    let remainingCharacters = dailyState.current.charactersRevealed;
-    if (remainingCharacters === 0) {
+    const characters = Array.from(answer.name);
+    if (dailyState.current.charactersRevealed === 0) {
         namePattern.textContent = "?";
         return;
     }
 
-    const pattern = Array.from(answer.name, (character) => {
+    const revealedCharacters = new Set(
+        getCharacterRevealOrder().slice(0, dailyState.current.charactersRevealed)
+    );
+    const pattern = characters.map((character, index) => {
         if (character.trim() === "") return character;
-        if (remainingCharacters > 0) {
-            remainingCharacters--;
-            return character;
-        }
-        return "_";
+        return revealedCharacters.has(index) ? character : "_";
     }).join("");
     namePattern.textContent = pattern;
+}
+
+function getCharacterRevealOrder() {
+    const revealableIndices = Array.from(answer.name, (character, index) =>
+        character.trim() === "" ? -1 : index
+    ).filter((index) => index >= 0);
+
+    return [
+        ...revealableIndices.slice(0, 1),
+        ...shuffleForDate(
+            revealableIndices.slice(1),
+            `${dailyDate}:${answer.image}:letter-reveals`
+        ),
+    ];
 }
 
 function createCharacterName(name, className = "") {
@@ -687,6 +704,7 @@ function revealNextCharacter() {
 
     dailyState.current.charactersRevealed++;
     dailyState.totalCharactersRevealed++;
+    revealCharacterButton.textContent = "Reveal letter (-2 points)";
     updateStats();
     renderNamePattern();
     if (dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name)) {
