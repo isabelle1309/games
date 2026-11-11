@@ -678,6 +678,11 @@ revealCharacterButton.addEventListener("click", revealNextCharacter);
 revealNameButton.addEventListener("click", revealName);
 nextButton.addEventListener("click", startNextRound);
 copySummaryButton.addEventListener("click", copyDailySummary);
+window.visualViewport?.addEventListener("resize", () => {
+    if (document.activeElement === guessInput) {
+        guessInput.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+});
 
 function isValidRoster(characters) {
     return Array.isArray(characters)
