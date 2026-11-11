@@ -381,6 +381,9 @@ body {
 	cursor: pointer;
 	transition: border-color .15s ease, background .15s ease, transform .15s ease;
 }
+.guess-button {
+	scroll-margin-block: 160px 0;
+}
 .guess-button:hover:not(:disabled),
 .next-button:hover {
 	transform: translateY(-1px);
