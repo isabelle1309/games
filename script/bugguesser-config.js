@@ -1,2 +1,2 @@
 export const dailyStateVersion = 1;
-export const dailyRosterRevision = 6;
+export const dailyRosterRevision = 7;

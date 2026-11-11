@@ -3,11 +3,14 @@ import { characters as npcCharacters } from "./hk/npc.js";
 import { characters as bossCharacters } from "./hk/boss.js";
 import { characters as hkssNpcCharacters } from "./hkss/npc.js";
 import { characters as hkssBossCharacters } from "./hkss/boss.js";
+import {
+    getAcceptedNames,
+    getDailyRosters,
+    shuffleForSeed,
+} from "./bugguesser-roster.js";
 import { dailyRosterRevision, dailyStateVersion } from "./bugguesser-config.js";
 
 const dailyRoundCount = 10;
-// Keep the schedule reproducible for every visitor while applying the seven-day exclusion rule.
-const dailyScheduleStart = Date.UTC(2020, 0, 1);
 const summaryNumberStart = Date.UTC(2026, 10, 9);
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 const gameModes = {
@@ -81,87 +84,6 @@ let selectedMode = "";
 let storageUnavailable = false;
 let characterNameTooltipId = 0;
 const characterTooltips = new Set();
-
-function hashSeed(value) {
-    let hash = 2166136261;
-    for (const character of value) {
-        hash = Math.imul(hash ^ character.charCodeAt(0), 16777619);
-    }
-    return hash >>> 0;
-}
-
-function createSeededRandom(seed) {
-    let state = seed;
-    return () => {
-        state += 0x6D2B79F5;
-        let value = state;
-        value = Math.imul(value ^ (value >>> 15), value | 1);
-        value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
-        return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
-    };
-}
-
-function shuffleForDate(items, date) {
-    const random = createSeededRandom(hashSeed(date));
-    const shuffled = [...items];
-    for (let index = shuffled.length - 1; index > 0; index--) {
-        const otherIndex = Math.floor(random() * (index + 1));
-        [shuffled[index], shuffled[otherIndex]] = [shuffled[otherIndex], shuffled[index]];
-    }
-    return shuffled;
-}
-
-function getAcceptedNames(character) {
-    return [character.name, ...(character.aliases ?? [])]
-        .map((name) => name.trim().toLocaleLowerCase())
-        .filter(Boolean);
-}
-
-function getDailyCharacters(date, sourceCharacters, mode) {
-    const seenNames = new Set();
-    const uniqueCharacters = sourceCharacters.filter((character) => {
-        const acceptedNames = getAcceptedNames(character);
-        if (acceptedNames.some((name) => seenNames.has(name))) return false;
-        acceptedNames.forEach((name) => seenNames.add(name));
-        return true;
-    });
-
-    const targetDay = Date.parse(`${date}T00:00:00.000Z`);
-    if (!Number.isFinite(targetDay) || targetDay < dailyScheduleStart) {
-        throw new RangeError(`Daily roster date must be on or after 2020-01-01: ${date}`);
-    }
-
-    let recentRosters = [];
-    for (let day = dailyScheduleStart; day <= targetDay; day += millisecondsPerDay) {
-        const currentDate = new Date(day).toISOString().slice(0, 10);
-        const recentlyUsed = new Set(
-            recentRosters.flatMap((roster) => roster.map((character) => character.image))
-        );
-        const available = uniqueCharacters.filter(
-            (character) => !recentlyUsed.has(character.image)
-        );
-        const seed = `${mode}:reroll-${dailyRosterRevision}:${currentDate}`;
-        const roster = shuffleForDate(available, seed).slice(0, dailyRoundCount);
-
-        if (roster.length !== dailyRoundCount) {
-            const rosterImages = new Set(roster.map((character) => character.image));
-            const remaining = uniqueCharacters.filter(
-                (character) => !rosterImages.has(character.image)
-            );
-            roster.push(
-                ...shuffleForDate(remaining, seed).slice(0, dailyRoundCount - roster.length)
-            );
-        }
-
-        if (roster.length !== dailyRoundCount) {
-            throw new Error(`Not enough eligible characters to create the daily roster for ${currentDate}.`);
-        }
-
-        recentRosters = [...recentRosters, roster].slice(-7);
-    }
-
-    return recentRosters.at(-1);
-}
 
 function createInitialState() {
     return {
@@ -381,7 +303,7 @@ function getCharacterRevealOrder() {
 
     return [
         ...revealableIndices.slice(0, 1),
-        ...shuffleForDate(
+        ...shuffleForSeed(
             revealableIndices.slice(1),
             `${dailyDate}:${answer.image}:letter-reveals`
         ),
@@ -794,7 +716,12 @@ function selectGameMode(mode) {
     }
 
     dailyDate = new Date().toISOString().slice(0, 10);
-    dailyCharacters = getDailyCharacters(dailyDate, game.characters, mode);
+    dailyCharacters = getDailyRosters(
+        dailyDate,
+        gameModes,
+        dailyRoundCount,
+        dailyRosterRevision
+    )[mode];
     let storedState;
     try {
         storedState = localStorage.getItem(getDailyStorageKey());
