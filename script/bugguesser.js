@@ -1,6 +1,7 @@
 import { characters as enemyCharacters } from "./hk/enemy.js";
 import { characters as npcCharacters } from "./hk/npc.js";
 import { characters as bossCharacters } from "./hk/boss.js";
+import { characters as hkssEnemyCharacters } from "./hkss/enemy.js";
 import { characters as hkssNpcCharacters } from "./hkss/npc.js";
 import { characters as hkssBossCharacters } from "./hkss/boss.js";
 import {
@@ -33,6 +34,11 @@ const gameModes = {
         title: "Hollow Knight - NPCs & bosses",
         summaryTitle: "HK NPCs & Bosses",
         characters: [...npcCharacters, ...bossCharacters]
+    },
+    "hkss-enemies": {
+        title: "Silksong - Enemies",
+        summaryTitle: "Silksong Enemies",
+        characters: hkssEnemyCharacters
     },
     "hkss-bosses": {
         title: "Silksong - Bosses",
