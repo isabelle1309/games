@@ -19,7 +19,6 @@ const characterWikiPageTitles = {
     "Oro or Mato": "Brothers Oro & Mato",
     "Moth Ghost": "Unnamed Moth",
     "Ductsucker Charge": "Ductsucker",
-    "Choir Bellbeare": "Choir Bellbearer",
     "Beastling": "Beastlings"
 };
 const gameModes = {

@@ -534,7 +534,7 @@ export const characters = [
         image: `${imageBase}6/6e/Choir_Hornhead_Idle.png`,
     },
     {
-        name: "Choir Bellbeare",
+        name: "Choir Bellbearer",
         image: `${imageBase}a/a7/Choir_Bellbearers_Idle.png`,
     },
     {
