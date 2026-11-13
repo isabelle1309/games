@@ -10,7 +10,7 @@ export const characters = [
     // Iselda.png
     {
         name: "Iselda",
-        image: `${imageBase}thumb/5/50/Iselda.png/300px-Iselda.png`,
+        image: `images/hk/ISELDA.png`,
         aliases: ["Bapanada"],
     },
     // Nailsmith_Standing.png

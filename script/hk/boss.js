@@ -210,4 +210,9 @@ export const characters = [
         name: "Radiance",
         image: `${imageBase}thumb/a/aa/Radiance_Idle.png/300px-Radiance_Idle.png`,
     },
+    // winged nosk
+    {
+        name: "Winged Nosk",
+        image: `${imageBase}thumb/1/14/Winged_Nosk.png/300px-Winged_Nosk.png`,
+    },
 ];
