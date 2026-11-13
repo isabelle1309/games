@@ -528,7 +528,7 @@ function showDailySummary() {
     setupNote.hidden = true;
     dailySummary.hidden = false;
     document.getElementById("summaryTitle").textContent =
-        `${gameModes[selectedMode].title} complete`;
+        `${gameModes[selectedMode].title}`;
     summaryDate.textContent = `${gameModes[selectedMode].title} · ${dailyDate} (UTC)`;
     summaryShareText.textContent = createDailySummaryText();
     dailySummaryBody.replaceChildren();
