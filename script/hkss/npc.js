@@ -218,6 +218,7 @@ export const characters = [
     {
         name: "Pious Isamor",
         image: `${imageBase}thumb/2/23/Pious_Isamor.png/300px-Pious_Isamor.png`,
+        aliases: ["Isamor"],
     },
     {
         name: "Pondcatcher Reed",

@@ -115,8 +115,6 @@ body {
 	display: flex;
 	min-width: 0;
 	align-items: center;
-	gap: 10px;
-	padding-right: 8px;
 	border: 1px solid var(--stone);
 	border-radius: 8px;
 	background: var(--cavern);
@@ -124,10 +122,6 @@ body {
 }
 .game-mode-option:hover {
 	border-color: var(--glow);
-	background: var(--surface-hover);
-}
-.game-mode-option.is-selected {
-	border-color: var(--gold);
 	background: var(--surface-hover);
 }
 .game-mode-option.is-completed {
@@ -152,20 +146,12 @@ body {
 	color: var(--text);
 	font: inherit;
 	text-align: left;
-	cursor: pointer;
+	text-decoration: none;
 	transition: color .15s ease;
 }
 .game-mode-button:focus-visible {
 	outline: 2px solid var(--gold);
 	outline-offset: 2px;
-}
-.game-mode-button[aria-pressed="true"] {
-	color: var(--gold);
-}
-.game-mode-button .mode-selection-info {
-	color: var(--game-muted);
-	font-size: .75rem;
-	font-weight: 400;
 }
 .game-mode-button .mode-completion-info {
 	color: var(--game-muted);
@@ -176,25 +162,8 @@ body {
 	color: var(--completed);
 	font-weight: 600;
 }
-.game-mode-button:disabled {
-	color: var(--game-muted);
-	cursor: not-allowed;
-	opacity: .65;
-}
 .game-mode-button small {
 	font-size: .75rem;
-}
-.mode-play-button[hidden] {
-	display: none;
-}
-.mode-play-button {
-	display: inline-flex;
-	min-width: 86px;
-	min-height: 38px;
-	align-items: center;
-	justify-content: center;
-	padding: 8px 12px;
-	text-decoration: none;
 }
 .game-card {
 	width: min(100%, 620px);
@@ -525,11 +494,11 @@ body {
 	outline: 2px solid var(--gold);
 	outline-offset: 2px;
 }
-#copySummaryStatus {
-	min-height: 1.4em;
-	margin: 8px 0 0;
-	color: var(--game-muted);
-	font-size: .9rem;
+.back-to-games {
+	display: flex;
+	justify-content: center;
+	margin: 18px 0 0;
+	padding-bottom: 8px;
 }
 .summary-table-wrap {
 	overflow-x: auto;

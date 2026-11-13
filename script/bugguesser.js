@@ -78,7 +78,6 @@ const dailySummaryBody = document.getElementById("dailySummaryBody");
 const summaryDate = document.getElementById("summaryDate");
 const summaryShareText = document.getElementById("summaryShareText");
 const copySummaryButton = document.getElementById("copySummaryButton");
-const copySummaryStatus = document.getElementById("copySummaryStatus");
 
 if ("virtualKeyboard" in navigator) {
     navigator.virtualKeyboard.overlaysContent = false;
@@ -531,10 +530,10 @@ async function copyDailySummary() {
         } else {
             copyWithTemporaryTextarea(summary);
         }
-        copySummaryStatus.textContent = "Summary copied to clipboard.";
+        copySummaryButton.textContent = "Copied!";
     } catch (error) {
         console.error("Could not copy the daily Bugguesser summary.", error);
-        copySummaryStatus.textContent = "Could not copy the summary. Please try again.";
+        copySummaryButton.textContent = "Error! :c";
     }
 }
 
@@ -727,7 +726,6 @@ function selectGameMode(mode) {
     roundContent.hidden = true;
     dailySummary.hidden = true;
     setupNote.hidden = true;
-    copySummaryStatus.textContent = "";
 
     if (!isValidRoster(game.characters)) {
         disableGame("This game mode does not have enough valid character data yet.");
