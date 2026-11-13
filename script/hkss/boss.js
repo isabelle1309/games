@@ -98,7 +98,7 @@ export const characters = [
     {
         name: "Shakra",
         image: `${imageBase}c/ce/Shakra_idle.png`,
-        aliases: ["Poshanka"],
+        aliases: ["Poshanka", "Wielding Rings"],
     },
     {
         name: "Summoned Saviour",
@@ -108,7 +108,7 @@ export const characters = [
     {
         name: "The Unravelled",
         image: `${imageBase}thumb/e/e2/B_The_Unravelled.png/300px-B_The_Unravelled.png`,
-        aliases: ["Unravelled"],
+        aliases: ["Unravelled", "Unraveled", "The Unraveled"],
     },
     {
         name: "Trobbio",

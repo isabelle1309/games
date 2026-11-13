@@ -81,7 +81,6 @@ export const characters = [
     {
         name: "Brooding Mawlek",
         image: `${imageBase}thumb/8/81/Mawlek_Idle.png/300px-Mawlek_Idle.png`,
-        aliases: ["Mawlek"],
     },
     // Broken_Vessel_Idle.png
     {
@@ -109,11 +108,13 @@ export const characters = [
     {
         name: "God Tamer",
         image: `${imageBase}thumb/d/d3/B_God_Tamer.png/300px-B_God_Tamer.png`,
+        aliases: ["Godtamer"],
     },
     // Zote_Idle.png
     {
-        name: "Zote",
+        name: "Zote the Mighty",
         image: `${imageBase}e/ee/Zote_Idle.png`,
+        aliases: ["Zote"],
     },
     // Grey_Prince_Zote_Idle.png
     {

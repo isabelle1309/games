@@ -72,9 +72,9 @@ export const characters = [
     },
     // Zote_Idle.png
     {
-        name: "Zote",
+        name: "Zote the Mighty",
         image: `${imageBase}e/ee/Zote_Idle.png`,
-        aliases: ["Zote the Mighty"],
+        aliases: ["Zote"],
     },
     // Tiso.png
     {
