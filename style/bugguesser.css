@@ -270,18 +270,45 @@ body {
 	color: var(--gold);
 	font-weight: 700;
 }
-.character-name-tooltip {
-	position: relative;
-	display: inline-block;
-	cursor: help;
-	text-decoration-line: underline;
-	text-decoration-style: dotted;
+.character-name-link {
+	color: inherit;
+	cursor: pointer;
+	text-decoration-color: var(--gold);
 	text-underline-offset: 3px;
 }
-.character-name-tooltip:focus-visible {
+.character-name-link.has-aliases {
+	text-decoration-style: dotted;
+}
+.character-name-link:hover {
+	color: var(--gold);
+}
+.character-name-with-aliases {
+	display: inline-flex;
+	align-items: baseline;
+	gap: .25em;
+}
+.character-alias-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--gold);
+	font: inherit;
+	line-height: 1;
+	cursor: pointer;
+}
+.character-alias-button:hover {
+	color: var(--text);
+}
+.character-alias-button:focus-visible {
 	border-radius: 2px;
 	outline: 2px solid var(--gold);
 	outline-offset: 3px;
+}
+.character-alias-icon {
+	font-size: .85em;
 }
 .character-name-aliases {
 	position: fixed;
@@ -524,6 +551,20 @@ body {
 }
 .summary-table td { color: var(--text); }
 .summary-table tbody tr:last-child td { border-bottom: 0; }
+.disclaimer,
+.alias-note {
+	margin: 12px 0 0;
+	text-align: center;
+}
+.alias-note .dotted {
+	text-decoration-line: underline;
+	text-decoration-style: dotted;
+	text-decoration-color: var(--gold);
+	text-underline-offset: 3px;
+}
+.alias-note .character-alias-icon {
+	color: var(--gold);
+}
 .no-replay-note {
 	margin: 18px 0 0;
 	font-size: .9rem;

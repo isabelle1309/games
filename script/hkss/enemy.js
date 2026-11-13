@@ -106,7 +106,7 @@ export const characters = [
         image: `${imageBase}e/e6/Pilgrim_Bellbearer_Idle.png`,
     },
     {
-        name: "Pilgrim Flyer",
+        name: "Winged Pilgrim",
         image: `${imageBase}1/1d/Pilgrim_Flyer_Idle.png`,
     },
     {

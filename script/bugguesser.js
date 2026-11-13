@@ -14,6 +14,14 @@ import { dailyRosterRevision, dailyStateVersion } from "./bugguesser-config.js";
 const dailyRoundCount = 10;
 const summaryNumberStart = Date.UTC(2026, 10, 9);
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
+const characterWikiPageTitles = {
+    "Mantis Lord": "Mantis Lords",
+    "Oro or Mato": "Brothers Oro & Mato",
+    "Moth Ghost": "Unnamed Moth",
+    "Ductsucker Charge": "Ductsucker",
+    "Choir Bellbeare": "Choir Bellbearer",
+    "Beastling": "Beastlings"
+};
 const gameModes = {
     "hk-enemies": {
         title: "Hollow Knight - Enemies",
@@ -362,26 +370,41 @@ function getCharacterRevealOrder() {
 
 function createCharacterName(name, className = "") {
     const character = dailyCharacters.find((entry) => entry.name === name);
+    const nameLink = document.createElement("a");
+    const visibleName = document.createElement("span");
+
+    nameLink.className = "character-name-link";
+    const wikiPageTitle = characterWikiPageTitles[name] ?? name;
+    nameLink.href = `https://hollowknight.wiki/w/${encodeURIComponent(wikiPageTitle.trim().replace(/\s+/g, "_"))}`;
+    nameLink.target = "_blank";
+    nameLink.rel = "noopener noreferrer";
+    visibleName.className = className;
+    visibleName.textContent = name;
+    nameLink.append(visibleName);
+
     if (!character?.aliases?.length) {
-        const plainName = document.createElement("span");
-        plainName.className = className;
-        plainName.textContent = name;
-        return plainName;
+        return nameLink;
     }
 
-    const nameTooltip = document.createElement("span");
-    const visibleName = document.createElement("span");
+    const nameWithAliases = document.createElement("span");
+    const aliasButton = document.createElement("button");
     const tooltip = document.createElement("span");
     const tooltipId = `character-name-tooltip-${++characterNameTooltipId}`;
     let hideTimeout;
     let isPinned = false;
 
-    nameTooltip.className = "character-name-tooltip";
-    nameTooltip.tabIndex = 0;
-    nameTooltip.setAttribute("aria-describedby", tooltipId);
-    nameTooltip.setAttribute("aria-expanded", "false");
-    visibleName.className = className;
-    visibleName.textContent = name;
+    nameWithAliases.className = "character-name-with-aliases";
+    nameLink.classList.add("has-aliases");
+    aliasButton.className = "character-alias-button";
+    aliasButton.type = "button";
+    aliasButton.setAttribute("aria-label", `Show aliases for ${name}`);
+    aliasButton.setAttribute("aria-describedby", tooltipId);
+    aliasButton.setAttribute("aria-expanded", "false");
+    const pencilIcon = document.createElement("span");
+    pencilIcon.className = "character-alias-icon";
+    pencilIcon.setAttribute("aria-hidden", "true");
+    pencilIcon.textContent = "✎";
+    aliasButton.append(pencilIcon);
     tooltip.id = tooltipId;
     tooltip.className = "character-name-aliases";
     tooltip.setAttribute("role", "tooltip");
@@ -389,29 +412,29 @@ function createCharacterName(name, className = "") {
     tooltip.textContent = `${aliasLabel}: ${character.aliases.join(", ")}`;
     const hideTooltip = () => {
         tooltip.classList.remove("is-visible");
-        nameTooltip.setAttribute("aria-expanded", "false");
+        aliasButton.setAttribute("aria-expanded", "false");
     };
 
-    nameTooltip.addEventListener("pointerenter", () => {
+    aliasButton.addEventListener("pointerenter", () => {
         clearTimeout(hideTimeout);
-        showCharacterTooltip(nameTooltip, tooltip);
+        showCharacterTooltip(aliasButton, tooltip);
     });
-    nameTooltip.addEventListener("pointerleave", () => {
+    aliasButton.addEventListener("pointerleave", () => {
         if (!isPinned) hideTimeout = setTimeout(hideTooltip, 150);
     });
-    nameTooltip.addEventListener("click", () => {
+    aliasButton.addEventListener("click", () => {
         isPinned = !isPinned;
         if (isPinned) {
             clearTimeout(hideTimeout);
-            showCharacterTooltip(nameTooltip, tooltip);
+            showCharacterTooltip(aliasButton, tooltip);
         } else {
             hideTooltip();
         }
     });
-    nameTooltip.addEventListener("focus", () => {
-        showCharacterTooltip(nameTooltip, tooltip);
+    aliasButton.addEventListener("focus", () => {
+        showCharacterTooltip(aliasButton, tooltip);
     });
-    nameTooltip.addEventListener("blur", () => {
+    aliasButton.addEventListener("blur", () => {
         clearTimeout(hideTimeout);
         isPinned = false;
         hideTooltip();
@@ -420,10 +443,10 @@ function createCharacterName(name, className = "") {
     tooltip.addEventListener("pointerleave", () => {
         if (!isPinned) hideTimeout = setTimeout(hideTooltip, 100);
     });
-    nameTooltip.append(visibleName);
+    nameWithAliases.append(nameLink, aliasButton);
     document.body.append(tooltip);
     characterTooltips.add(tooltip);
-    return nameTooltip;
+    return nameWithAliases;
 }
 
 function hideCharacterTooltips() {
