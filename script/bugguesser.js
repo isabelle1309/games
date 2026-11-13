@@ -790,7 +790,7 @@ function selectGameMode(mode) {
     selectedMode = mode;
     document.title = `${game.title} | Bugguesser`;
     document.getElementById("gameIntro").textContent =
-        `${game.title}: identify each character from its silhouette.`;
+        ``;
     gameCard.hidden = false;
     roundContent.hidden = true;
     dailySummary.hidden = true;
