@@ -106,6 +106,7 @@ function createInitialState() {
             startedAt: null,
             guesses: 0,
             charactersRevealed: 0,
+            hintPenalty: 0,
             outcome: null,
             points: 0
         },
@@ -143,6 +144,8 @@ function isValidDailyState(state) {
         && Number.isInteger(state.current.guesses)
         && Number.isInteger(state.current.charactersRevealed)
         && state.current.charactersRevealed >= 0
+        && Number.isFinite(state.current.hintPenalty)
+        && state.current.hintPenalty >= 0
         && state.current.charactersRevealed <= getRevealableCharacterCount(
             dailyCharacters[state.round]?.name ?? ""
         )
@@ -176,22 +179,35 @@ function restoreSavedRoster(state) {
 }
 
 function migrateSavedState(state) {
-    if (!state || typeof state !== "object" || !Object.hasOwn(state, "totalHints")) {
-        return state;
-    }
+    if (!state || typeof state !== "object") return state;
 
     const { totalHints, current, results, ...stateWithoutLegacyCount } = state;
-    const migrateRound = (round) => {
+    const migrateCurrent = (round) => {
+        if (!round || typeof round !== "object") return round;
+        const { hints, hintPenalty, ...roundWithoutLegacyCount } = round;
+        delete roundWithoutLegacyCount.hintsUsed;
+        const charactersRevealed = hints ?? roundWithoutLegacyCount.charactersRevealed;
+        return {
+            ...roundWithoutLegacyCount,
+            charactersRevealed,
+            hintPenalty: hintPenalty ?? charactersRevealed * 2
+        };
+    };
+    const migrateResult = (round) => {
         if (!round || typeof round !== "object") return round;
         const { hints, ...roundWithoutLegacyCount } = round;
-        return { ...roundWithoutLegacyCount, charactersRevealed: hints };
+        return {
+            ...roundWithoutLegacyCount,
+            charactersRevealed: hints ?? roundWithoutLegacyCount.charactersRevealed
+        };
     };
+    const hasLegacyHintCount = Object.hasOwn(state, "totalHints");
 
     return {
         ...stateWithoutLegacyCount,
-        totalCharactersRevealed: totalHints,
-        current: migrateRound(current),
-        results: Array.isArray(results) ? results.map(migrateRound) : results
+        ...(hasLegacyHintCount ? { totalCharactersRevealed: totalHints } : {}),
+        current: migrateCurrent(current),
+        results: Array.isArray(results) ? results.map(migrateResult) : results
     };
 }
 
@@ -224,14 +240,46 @@ function setRoundControlsDisabled(disabled) {
 }
 
 function updateStats() {
-    scoreElement.textContent = String(dailyState.score);
+    scoreElement.textContent = formatScore(dailyState.score);
     roundElement.textContent = `${dailyState.round + 1} / ${dailyRoundCount}`;
     guessCountElement.textContent = String(dailyState.totalGuesses);
     characterRevealCountElement.textContent = String(dailyState.totalCharactersRevealed);
 }
 
+function formatScore(score) {
+    return String(Number(score.toFixed(2)));
+}
+
 function getRevealableCharacterCount(name) {
     return Array.from(name).filter((character) => character.trim() !== "").length;
+}
+
+function getCharactersPerHint(name) {
+    return getRevealableCharacterCount(name) >= 10 ? 2 : 1;
+}
+
+function getNextHintCharacterCount(name, charactersRevealed) {
+    const charactersRemaining = getRevealableCharacterCount(name) - charactersRevealed;
+    if (charactersRevealed === 0) return Math.min(1, charactersRemaining);
+    return Math.min(getCharactersPerHint(name), charactersRemaining);
+}
+
+function getHintCost(charactersToReveal) {
+    return charactersToReveal === 1 ? 2 : 1;
+}
+
+function updateHintButton() {
+    const charactersRemaining =
+        getRevealableCharacterCount(answer.name) - dailyState.current.charactersRevealed;
+    const charactersToReveal =
+        getNextHintCharacterCount(answer.name, dailyState.current.charactersRevealed);
+    const pointCost = getHintCost(charactersToReveal);
+    const letterLabel = charactersToReveal === 1 ? "letter" : "letters";
+    const pointLabel = pointCost === 1 ? "point" : "points";
+
+    revealCharacterButton.textContent =
+        `Reveal ${charactersToReveal} ${letterLabel} (-${pointCost} ${pointLabel})`;
+    revealCharacterButton.disabled = charactersRemaining <= 0;
 }
 
 function fadeOutSprite() {
@@ -275,12 +323,7 @@ function renderCurrentRound() {
     gameStatus.textContent = "Type your guess. Guesses are not case-sensitive.";
     guessInput.disabled = false;
     guessButton.disabled = false;
-    revealCharacterButton.textContent =
-        dailyState.current.charactersRevealed > 0
-            ? "Reveal letter (-2 points)"
-            : "Reveal name pattern (-2 points)";
-    revealCharacterButton.disabled =
-        dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name);
+    updateHintButton();
     revealNameButton.disabled = false;
     nextButton.hidden = true;
     guessInput.focus();
@@ -429,7 +472,7 @@ function renderResolvedRound() {
             "Correct! ",
             createCharacterName(result.name),
             ` — ${result.guesses} ${result.guesses === 1 ? "guess" : "guesses"}, `
-            + `${result.charactersRevealed} ${result.charactersRevealed === 1 ? "character" : "characters"} revealed. +${result.points} points.`
+            + `${result.charactersRevealed} ${result.charactersRevealed === 1 ? "character" : "characters"} revealed. +${formatScore(result.points)} points.`
         );
     } else if (result.outcome === "revealed") {
         gameStatus.replaceChildren(
@@ -511,7 +554,7 @@ function createDailySummaryText() {
     return [
         `BugGuesser #${challengeNumber}`,
         `${gameModes[selectedMode].summaryTitle} in ${formatDuration(totalElapsedMs)}`,
-        `Guesses: ${dailyState.totalGuesses} | Score: ${dailyState.score}`,
+        `Guesses: ${dailyState.totalGuesses} | Score: ${formatScore(dailyState.score)}`,
         "",
         ...resultRows,
     ].join("\n");
@@ -575,6 +618,7 @@ async function startNextRound() {
         startedAt: Date.now(),
         guesses: 0,
         charactersRevealed: 0,
+        hintPenalty: 0,
         outcome: null,
         points: 0
     };
@@ -622,7 +666,7 @@ function submitGuess(event) {
         return;
     }
 
-    const pointsEarned = Math.max(0, 10 - dailyState.current.charactersRevealed * 2);
+    const pointsEarned = Math.max(0, 10 - dailyState.current.hintPenalty);
     dailyState.score += pointsEarned;
     resolveRound("correct", pointsEarned);
 }
@@ -633,9 +677,13 @@ function revealNextCharacter() {
         || dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name)
     ) return;
 
-    dailyState.current.charactersRevealed++;
-    dailyState.totalCharactersRevealed++;
-    revealCharacterButton.textContent = "Reveal letter (-2 points)";
+    const charactersToReveal = getNextHintCharacterCount(
+        answer.name,
+        dailyState.current.charactersRevealed
+    );
+    dailyState.current.hintPenalty += getHintCost(charactersToReveal);
+    dailyState.current.charactersRevealed += charactersToReveal;
+    dailyState.totalCharactersRevealed += charactersToReveal;
     updateStats();
     renderNamePattern();
     if (dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name)) {
@@ -643,8 +691,7 @@ function revealNextCharacter() {
         return;
     }
 
-    revealCharacterButton.disabled =
-        dailyState.current.charactersRevealed >= getRevealableCharacterCount(answer.name);
+    updateHintButton();
     saveDailyState();
 }
 
