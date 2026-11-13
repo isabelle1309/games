@@ -115,7 +115,7 @@ body {
 	display: flex;
 	min-width: 0;
 	align-items: center;
-	border: 1px solid var(--stone);
+	border: 2px solid var(--stone);
 	border-radius: 8px;
 	background: var(--cavern);
 	transition: border-color .15s ease, background .15s ease;
@@ -125,7 +125,7 @@ body {
 	background: var(--surface-hover);
 }
 .game-mode-option.is-completed {
-	border: 2px solid var(--completed);
+	border-color: var(--completed);
 }
 .game-mode-option.is-completed .game-mode-button {
 	border-radius: 6px;
