@@ -2,9 +2,12 @@ const imageBase = "https://cdn.wikimg.net/en/hkwiki/images/";
 
 export const characters = [
     {
-        name: "Garmond & Zaza",
-        image: `${imageBase}3/36/Garmond_%26_Zaza_Idle.png`,
-        aliases: ["Garmond", "Zaza", "Garmond and Zaza"],
+        name: "Garmond",
+        image: `${imageBase}1/1d/Garmond_Idle.png`,
+    },
+    {
+        name: "Zaza",
+        image: `${imageBase}4/49/Zaza_Idle.png`,
     },
     {
         name: "Green Prince",
