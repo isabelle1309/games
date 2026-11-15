@@ -271,13 +271,11 @@ body {
 	font-weight: 700;
 }
 .character-name-link {
-	color: inherit;
+	color: var(--gold);
 	cursor: pointer;
+	font-weight: 700;
 	text-decoration-color: var(--gold);
 	text-underline-offset: 3px;
-}
-.character-name-link.has-aliases {
-	text-decoration-style: dotted;
 }
 .character-name-link:hover {
 	color: var(--gold);
@@ -479,7 +477,7 @@ body {
 	color: var(--gold);
 	font-family: "Trajan Pro", Georgia, "Times New Roman", serif;
 	font-size: clamp(1.6rem, 5vw, 2.2rem);
-	font-weight: 400;
+	font-weight: 700;
 	text-align: center;
 }
 .summary-date,
@@ -550,17 +548,17 @@ body {
 	letter-spacing: .06em;
 }
 .summary-table td { color: var(--text); }
+.summary-table .character-name-link {
+	color: var(--gold);
+	font-weight: 700;
+	text-decoration: none;
+}
+.summary-table .character-name-link:hover { text-decoration: underline; }
 .summary-table tbody tr:last-child td { border-bottom: 0; }
 .disclaimer,
 .alias-note {
 	margin: 12px 0 0;
 	text-align: center;
-}
-.alias-note .dotted {
-	text-decoration-line: underline;
-	text-decoration-style: dotted;
-	text-decoration-color: var(--gold);
-	text-underline-offset: 3px;
 }
 .alias-note .character-alias-icon {
 	color: var(--gold);
