@@ -242,9 +242,9 @@ export const characters = [
     },
     // Millibelle.png
     {
-        name: "Millibelle",
+        name: "Millibelle the Banker",
         image: `${imageBase}2/24/Millibelle.png`,
-        aliases: ["Millibelle the Banker"],
+        aliases: ["Millibelle"],
     },
     // Leg_Eater.png
     {
