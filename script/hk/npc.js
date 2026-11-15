@@ -244,6 +244,7 @@ export const characters = [
     {
         name: "Millibelle",
         image: `${imageBase}2/24/Millibelle.png`,
+        aliases: ["Millibelle the Banker"],
     },
     // Leg_Eater.png
     {
