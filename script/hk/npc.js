@@ -164,6 +164,7 @@ export const characters = [
     {
         name: "Joni",
         image: `${imageBase}9/96/Joni.png`,
+        aliases: ["Blue Child Joni", "Blue Child"],
     },
     // Dung_Defender_Idle.png
     {
