@@ -231,58 +231,6 @@ export const characters = [
         image: `${imageBase}d/d9/Sula.png`,
     },
     {
-        name: "Aged Pilgrim",
-        image: `${imageBase}6/61/Aged_Pilgrim.png`,
-    },
-    {
-        name: "Dejected Pilgrim",
-        image: `${imageBase}8/8f/Dejected_Pilgrim.png`,
-    },
-    {
-        name: "Exhausted Pilgrim",
-        image: `${imageBase}8/8e/Exhausted_Pilgrim.png`,
-    },
-    {
-        name: "Fearful Pilgrim",
-        image: `${imageBase}f/f8/Fearful_Pilgrim.png`,
-    },
-    {
-        name: "Horned Pilgrim",
-        image: `${imageBase}5/5d/Horned_Pilgrim.png`,
-    },
-    {
-        name: "Humble Pilgrim",
-        image: `${imageBase}2/22/Humble_Pilgrim.png`,
-    },
-    {
-        name: "Pilgrim Preacher",
-        image: `${imageBase}6/6a/Pilgrim_Preacher.png`,
-    },
-    {
-        name: "Quiet Pilgrim",
-        image: `${imageBase}7/73/Quiet_Pilgrim.png`,
-    },
-    {
-        name: "Scared Pilgrim",
-        image: `${imageBase}8/88/Scared_Pilgrim.png`,
-    },
-    {
-        name: "Solemn Pilgrim",
-        image: `${imageBase}8/81/Solemn_Pilgrim.png`,
-    },
-    {
-        name: "Tall Pilgrim",
-        image: `${imageBase}f/f7/Tall_Pilgrim.png`,
-    },
-    {
-        name: "Weary Pilgrim",
-        image: `${imageBase}0/09/Weary_Pilgrim.png`,
-    },
-    {
-        name: "Worried Pilgrim",
-        image: `${imageBase}2/26/Worried_Pilgrim.png`,
-    },
-    {
         name: "Forge Daughter",
         image: `${imageBase}thumb/7/7f/Forge_Daughter_Idle.png/300px-Forge_Daughter_Idle.png`,
     },
