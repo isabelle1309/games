@@ -43,15 +43,15 @@ export const characters = [
     },
     // Paintmaster_Idle.png
     {
-        name: "Sheo",
+        name: "Nailmaster Sheo",
         image: `${imageBase}thumb/e/e7/Paintmaster_Idle.png/300px-Paintmaster_Idle.png`,
-        aliases: ["Paintmaster Sheo", "Paintmaster"],
+        aliases: ["Sheo", "Paintmaster Sheo", "Paintmaster"],
     },
     // Great_Nailsage_Sly_Idle.png
     {
-        name: "Sly",
+        name: "Great Nailsage Sly",
         image: `${imageBase}thumb/2/26/Great_Nailsage_Sly_Idle.png/300px-Great_Nailsage_Sly_Idle.png`,
-        aliases: ["Great Nailsage Sly", "Nailsage Sly"],
+        aliases: ["Sly", "Nailsage Sly"],
     },
     // Cloth_Idle.png
     {
@@ -145,9 +145,9 @@ export const characters = [
     },
     // Grimm_Idle.png
     {
-        name: "Grimm",
+        name: "Troupe Master Grimm",
         image: `${imageBase}b/ba/Grimm_Idle.png`,
-        aliases: ["Troupe Master Grimm", "TMG"],
+        aliases: ["Grimm", "TMG"],
     },
     // Last_Stag.png
     {
@@ -162,9 +162,9 @@ export const characters = [
     },
     // Joni.png
     {
-        name: "Joni",
+        name: "Blue Child Joni",
         image: `${imageBase}9/96/Joni.png`,
-        aliases: ["Blue Child Joni", "Blue Child"],
+        aliases: ["Joni", "Blue Child"],
     },
     // Dung_Defender_Idle.png
     {
