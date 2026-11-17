@@ -141,7 +141,6 @@ document.getElementById("accountToggle")?.addEventListener("click", async () => 
     if (!currentUser) {
         setAccountMessage("");
         if (accountDialog && !accountDialog.open) accountDialog.showModal();
-        document.getElementById("accountEmail")?.focus();
         return;
     }
 
