@@ -126,6 +126,130 @@ summary::after {
 	outline: 2px solid currentColor;
 	outline-offset: 2px;
 }
+.account-nav-button {
+	min-height: 40px;
+	padding: 8px 12px;
+	border: 1px solid var(--border);
+	border-radius: 7px;
+	background: var(--surface);
+	color: var(--text);
+	font: inherit;
+	cursor: pointer;
+	white-space: nowrap;
+}
+.account-nav-button:hover,
+.account-nav-button:focus-visible {
+	background: var(--surface-hover);
+}
+.account-nav-button:focus-visible,
+.account-dialog button:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+.account-dialog {
+	width: min(420px, calc(100vw - 32px));
+	max-width: calc(100vw - 32px);
+	padding: 24px;
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	background: var(--surface);
+	color: var(--text);
+	box-shadow: var(--shadow);
+	font: inherit;
+}
+.account-dialog::backdrop {
+	background: rgb(0 0 0 / 65%);
+	backdrop-filter: blur(2px);
+}
+.account-dialog-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+.account-dialog-heading h2 {
+	margin: 0;
+	font-size: 1.4rem;
+}
+.account-dialog-close {
+	padding: 6px 9px;
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	background: var(--surface);
+	color: var(--muted-text);
+	font: inherit;
+	cursor: pointer;
+}
+.account-dialog-description {
+	margin: 12px 0 18px;
+	color: var(--muted-text);
+	font-size: .9rem;
+}
+.account-form {
+	display: grid;
+	gap: 8px;
+}
+.account-form label {
+	color: var(--muted-text);
+	font-size: .85rem;
+}
+.account-form input {
+	width: 100%;
+	min-height: 42px;
+	margin-bottom: 6px;
+	padding: 8px 10px;
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	background: var(--page-bg);
+	color: var(--text);
+	font: inherit;
+}
+.account-form input:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+.account-submit {
+	min-height: 44px;
+	margin-top: 6px;
+	border: 1px solid var(--text);
+	border-radius: 7px;
+	background: var(--text);
+	color: var(--page-bg);
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+}
+.account-mode-toggle {
+	margin-top: 14px;
+	padding: 4px 0;
+	border: 0;
+	background: transparent;
+	color: var(--muted-text);
+	font: inherit;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	cursor: pointer;
+}
+.account-message {
+	margin: 12px 0 0;
+	color: var(--muted-text);
+	font-size: .85rem;
+}
+.account-notice {
+	position: fixed;
+	z-index: 2;
+	right: 16px;
+	bottom: 16px;
+	width: min(420px, calc(100vw - 32px));
+	margin: 0;
+	padding: 12px 16px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background: var(--surface);
+	color: var(--text);
+	box-shadow: var(--shadow);
+	font-size: .9rem;
+}
 main {
 	width: min(1100px, calc(100% - 40px));
 	min-height: calc(100vh - 69px);

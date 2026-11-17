@@ -10,6 +10,13 @@ import {
     shuffleForSeed,
 } from "./bugguesser-roster.js";
 import { dailyRosterRevision, dailyStateVersion } from "./bugguesser-config.js";
+import {
+    getCachedUser,
+    getCurrentUser,
+    loadGameProgress,
+    saveGameProgress,
+    setAccountMessage
+} from "./account.js";
 
 const dailyRoundCount = 10;
 const summaryNumberStart = Date.UTC(2026, 10, 9);
@@ -96,6 +103,7 @@ let dailyState;
 let answer;
 let selectedMode = "";
 let storageUnavailable = false;
+let canSyncCloud = true;
 let characterNameTooltipId = 0;
 const characterTooltips = new Set();
 
@@ -225,9 +233,9 @@ function getDailyStorageKey() {
 function saveDailyState() {
     if (storageUnavailable) return false;
 
+    dailyState.updatedAt = new Date().toISOString();
     try {
         localStorage.setItem(getDailyStorageKey(), JSON.stringify(dailyState));
-        return true;
     } catch (error) {
         console.error("Could not save the daily Bugguesser attempt.", error);
         storageUnavailable = true;
@@ -236,6 +244,15 @@ function saveDailyState() {
         setRoundControlsDisabled(true);
         return false;
     }
+
+    if (getCachedUser() && canSyncCloud) {
+        void saveGameProgress(selectedMode, dailyDate, dailyState).catch((error) => {
+            console.error("Could not sync the daily Bugguesser attempt.", error);
+            setAccountMessage("Cloud sync failed; progress is still saved on this device.");
+        });
+    }
+
+    return true;
 }
 
 function setRoundControlsDisabled(disabled) {
@@ -780,7 +797,7 @@ function isValidRoster(characters) {
         );
 }
 
-function selectGameMode(mode) {
+async function selectGameMode(mode) {
     const game = gameModes[mode];
     if (!game) {
         disableGame("This game mode is unavailable. Return to game selection and choose an available mode.");
@@ -808,23 +825,98 @@ function selectGameMode(mode) {
         dailyRoundCount,
         dailyRosterRevision
     )[mode];
+    canSyncCloud = true;
     let storedState;
+    let localState;
+    let localStateError;
     try {
         storedState = localStorage.getItem(getDailyStorageKey());
-        dailyState = storedState
+        localState = storedState
             ? migrateSavedState(JSON.parse(storedState))
-            : createInitialState();
+            : null;
     } catch (error) {
         console.error("Could not load the saved daily Bugguesser attempt.", error);
-        disableGame("Saved daily progress could not be read. This attempt was not reset.");
+        localStateError = error;
+    }
+
+    let localStateIsValid = false;
+    if (localState) {
+        restoreSavedRoster(localState);
+        localStateIsValid = isValidDailyState(localState);
+    }
+
+    let remoteState;
+    let remoteStateIsValid = false;
+    let remoteRow;
+    let remoteLoadFailed = false;
+    const user = await getCurrentUser();
+    if (user) {
+        try {
+            remoteRow = await loadGameProgress(mode, dailyDate);
+            if (remoteRow) {
+                remoteState = migrateSavedState(remoteRow.state);
+                restoreSavedRoster(remoteState);
+                remoteStateIsValid = isValidDailyState(remoteState);
+                if (!remoteStateIsValid) {
+                    throw new Error("The saved account progress has an invalid format.");
+                }
+            }
+        } catch (error) {
+            console.error("Could not load the account's daily Bugguesser attempt.", error);
+            setAccountMessage("Could not load cloud progress. Any local progress is preserved.");
+            canSyncCloud = false;
+            remoteLoadFailed = true;
+        }
+    }
+
+    if (user && remoteLoadFailed && !localStateIsValid && !remoteRow) {
+        disableGame("Account progress could not be checked. Try again before starting this challenge.");
         return;
     }
 
-    restoreSavedRoster(dailyState);
+    const localUpdatedAt = Date.parse(localState?.updatedAt ?? "") || 0;
+    const remoteStateTimestamp = Date.parse(remoteState?.updatedAt ?? "");
+    const remoteUpdatedAt = Number.isFinite(remoteStateTimestamp)
+        ? remoteStateTimestamp
+        : Date.parse(remoteRow?.updated_at ?? "") || 0;
+    const useRemoteState = remoteStateIsValid
+        && (!localStateIsValid || remoteUpdatedAt > localUpdatedAt);
+
+    if (useRemoteState) {
+        dailyState = remoteState;
+        restoreSavedRoster(dailyState);
+        try {
+            localStorage.setItem(getDailyStorageKey(), JSON.stringify(dailyState));
+            storedState = "cloud";
+        } catch (error) {
+            console.error("Could not cache the account's daily Bugguesser attempt.", error);
+            storageUnavailable = true;
+            disableGame("Account progress could not be saved in this browser. The attempt is paused.");
+            return;
+        }
+    } else if (localStateIsValid) {
+        dailyState = localState;
+        restoreSavedRoster(dailyState);
+    } else if (storedState !== null || localStateError) {
+        console.error("Saved daily Bugguesser attempt has an invalid format.");
+        disableGame(localStateError
+            ? "Saved daily progress could not be read. This attempt was not reset."
+            : "Saved daily progress is invalid. This attempt was not reset.");
+        return;
+    } else if (remoteRow) {
+        disableGame("Saved account progress is invalid. This attempt was not reset.");
+        return;
+    } else {
+        dailyState = createInitialState();
+    }
+
     if (!isValidDailyState(dailyState)) {
         console.error("Saved daily Bugguesser attempt has an invalid format.");
         disableGame("Saved daily progress is invalid. This attempt was not reset.");
     } else if (!storedState && !saveDailyState()) {
+        disableGame("Daily progress could not be saved. The game is paused to protect your attempt.");
+    } else if (user && canSyncCloud && !useRemoteState
+        && (!remoteRow || localUpdatedAt > remoteUpdatedAt) && !saveDailyState()) {
         disableGame("Daily progress could not be saved. The game is paused to protect your attempt.");
     } else if (dailyState.finished) {
         showDailySummary();
@@ -837,4 +929,4 @@ function selectGameMode(mode) {
 }
 
 const requestedMode = new URLSearchParams(window.location.search).get("mode");
-selectGameMode(requestedMode);
+void selectGameMode(requestedMode);

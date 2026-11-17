@@ -8,6 +8,7 @@
 	<link rel="icon" href="images/favicon.ico" type="image/x-icon">
 	<script src="script/home-theme.js"></script>
 	<script src="script/home-nav.js" defer></script>
+	<script type="module" src="script/account.js"></script>
 </head>
 <body>
 	<header>
@@ -20,12 +21,30 @@
 						<a class="dropdown-link" href="bugguesser.html">Bugguesser</a>
 					</div>
 				</details>
+				<button class="account-nav-button" id="accountToggle" type="button">Sign in</button>
 				<button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode">
 					<img id="themeIcon" src="images/moon.svg" alt="" aria-hidden="true">
 				</button>
 			</div>
 		</nav>
 	</header>
+	<dialog class="account-dialog" id="accountDialog" aria-labelledby="accountDialogTitle">
+		<div class="account-dialog-heading">
+			<h2 id="accountDialogTitle">Sign in</h2>
+			<button class="account-dialog-close" id="accountClose" type="button">Close</button>
+		</div>
+		<p class="account-dialog-description" id="accountDialogDescription"></p>
+		<form class="account-form" id="accountForm">
+			<label for="accountEmail">Email</label>
+			<input id="accountEmail" name="email" type="email" autocomplete="email" required>
+			<label for="accountPassword">Password</label>
+			<input id="accountPassword" name="password" type="password" autocomplete="current-password" minlength="6" required>
+			<button class="account-submit" id="accountSubmit" type="submit">Sign in</button>
+		</form>
+		<button class="account-mode-toggle" id="accountModeToggle" type="button">Create an account</button>
+		<p class="account-message" id="accountMessage" role="status" aria-live="polite"></p>
+	</dialog>
+	<p class="account-notice" id="accountNotice" role="status" aria-live="polite" hidden></p>
 	<main>
 		<section class="home-hero" aria-labelledby="homeTitle">
 			<span class="hero-border hero-border-top" aria-hidden="true"></span>
