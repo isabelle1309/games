@@ -11,7 +11,9 @@ const dailyDate = new Date().toISOString().slice(0, 10);
 
 async function updateCompletedModes() {
     let cloudCompletedModes = new Set();
+    let cloudInProgressModes = new Set();
     const localCompletedProgress = new Map();
+    const localInProgressModes = new Set();
 
     for (const button of modeButtons) {
         const mode = button.dataset.gameMode;
@@ -23,9 +25,13 @@ async function updateCompletedModes() {
 
             const state = JSON.parse(savedState);
             if (state?.version === dailyStateVersion
-                && state.date === dailyDate
-                && state.finished === true) {
-                localCompletedProgress.set(mode, state);
+                && state.date === dailyDate) {
+                if (state.finished === true) {
+                    localCompletedProgress.set(mode, state);
+                } else if (state.finished === false
+                    && Number.isFinite(state.current?.startedAt)) {
+                    localInProgressModes.add(mode);
+                }
             }
         } catch (error) {
             console.error(`Could not read the saved ${mode} daily challenge.`, error);
@@ -55,6 +61,14 @@ async function updateCompletedModes() {
                     .filter((entry) => entry.state?.finished === true)
                     .map((entry) => entry.mode)
             );
+            cloudInProgressModes = new Set(
+                [...progressByMode.values()]
+                    .filter((entry) =>
+                        entry.state?.finished === false
+                        && Number.isFinite(entry.state.current?.startedAt)
+                    )
+                    .map((entry) => entry.mode)
+            );
         }
     } catch (error) {
         console.error("Could not load or sync account progress for today's challenges.", error);
@@ -68,14 +82,23 @@ async function updateCompletedModes() {
         const optionRow = button.closest(".game-mode-option");
         const isCompleted = localCompletedProgress.has(mode);
         const isCompletedAnywhere = isCompleted || cloudCompletedModes.has(mode);
+        const isInProgress = !isCompletedAnywhere
+            && (localInProgressModes.has(mode) || cloudInProgressModes.has(mode));
 
         optionRow.classList.toggle("is-completed", isCompletedAnywhere);
+        optionRow.classList.toggle("is-in-progress", isInProgress);
         completionInfo.textContent = isCompletedAnywhere
             ? "Daily challenge completed"
-            : "Daily challenge not yet completed";
+            : isInProgress
+                ? "Daily challenge in progress"
+                : "Daily challenge not yet started";
         button.setAttribute(
             "aria-label",
-            isCompletedAnywhere ? `${modeName}, daily challenge completed` : modeName
+            isCompletedAnywhere
+                ? `${modeName}, daily challenge completed`
+                : isInProgress
+                    ? `${modeName}, daily challenge in progress`
+                    : modeName
         );
     }
 }
