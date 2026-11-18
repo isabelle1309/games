@@ -9,7 +9,11 @@ import {
     getDailyRosters,
     shuffleForSeed,
 } from "./bugguesser-roster.js";
-import { dailyRosterRevision, dailyStateVersion } from "./bugguesser-config.js";
+import {
+    dailyChallengeStartDate,
+    dailyRosterRevision,
+    dailyStateVersion
+} from "./bugguesser-config.js";
 import {
     getCachedUser,
     getCurrentUser,
@@ -19,7 +23,6 @@ import {
 } from "./account.js";
 
 const dailyRoundCount = 10;
-const summaryNumberStart = Date.UTC(2026, 10, 9);
 const millisecondsPerDay = 24 * 60 * 60 * 1000;
 const characterWikiPageTitles = {
     "Mantis Lord": "Mantis Lords",
@@ -102,6 +105,7 @@ let dailyDate = "";
 let dailyState;
 let answer;
 let selectedMode = "";
+let isArchiveReplay = false;
 let storageUnavailable = false;
 let canSyncCloud = true;
 let characterNameTooltipId = 0;
@@ -231,6 +235,7 @@ function getDailyStorageKey() {
 }
 
 function saveDailyState() {
+    if (isArchiveReplay) return true;
     if (storageUnavailable) return false;
 
     dailyState.updatedAt = new Date().toISOString();
@@ -544,9 +549,16 @@ function showDailySummary() {
     gameCard.hidden = true;
     setupNote.hidden = true;
     dailySummary.hidden = false;
+    const backLink = document.getElementById("summaryBackLink");
+    const noReplayNote = document.getElementById("noReplayNote");
     document.getElementById("summaryTitle").textContent =
         `${gameModes[selectedMode].title}`;
     summaryDate.textContent = `${gameModes[selectedMode].title} · ${dailyDate} (UTC)`;
+    backLink.href = isArchiveReplay ? "bugguesser-archive.html" : "bugguesser.html";
+    backLink.textContent = isArchiveReplay ? "Back to archive" : "Back to game selection";
+    noReplayNote.textContent = isArchiveReplay
+        ? "Archive runs are for practice and do not save progress."
+        : "This daily attempt is complete in this browser. Come back tomorrow for a new set.";
     summaryShareText.textContent = createDailySummaryText();
     dailySummaryBody.replaceChildren();
 
@@ -581,7 +593,8 @@ function createDailySummaryText() {
         0
     );
     const challengeNumber = Math.floor(
-        (Date.parse(`${dailyDate}T00:00:00.000Z`) - summaryNumberStart) / millisecondsPerDay
+        (Date.parse(`${dailyDate}T00:00:00.000Z`)
+            - Date.parse(`${dailyChallengeStartDate}T00:00:00.000Z`)) / millisecondsPerDay
     ) + 1;
     const resultRows = [0, 1].map((rowIndex) =>
         dailyState.results
@@ -818,13 +831,39 @@ async function selectGameMode(mode) {
         return;
     }
 
-    dailyDate = new Date().toISOString().slice(0, 10);
+    const today = new Date().toISOString().slice(0, 10);
+    const requestedDate = new URLSearchParams(window.location.search).get("date");
+    isArchiveReplay = requestedDate !== null;
+    dailyDate = requestedDate ?? today;
+    if (isArchiveReplay) {
+        const parsedDate = new Date(`${dailyDate}T00:00:00.000Z`);
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dailyDate)
+            || Number.isNaN(parsedDate.getTime())
+            || parsedDate.toISOString().slice(0, 10) !== dailyDate
+            || dailyDate < dailyChallengeStartDate
+            || dailyDate >= today) {
+            disableGame("That archive date is unavailable. Choose a past date from the archive.");
+            return;
+        }
+        document.getElementById("gameIntro").textContent =
+            `${game.title} · Bugguesser #${Math.floor(
+                (parsedDate.getTime() - Date.parse(`${dailyChallengeStartDate}T00:00:00.000Z`))
+                / millisecondsPerDay
+            ) + 1} · ${dailyDate} (Archive)`;
+    }
+
     dailyCharacters = getDailyRosters(
         dailyDate,
         gameModes,
         dailyRoundCount,
         dailyRosterRevision
     )[mode];
+    if (isArchiveReplay) {
+        dailyState = createInitialState();
+        startGame();
+        return;
+    }
+
     canSyncCloud = true;
     let storedState;
     let localState;

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#111827">
+	<title>Bugguesser Archive</title>
+	<link rel="stylesheet" href="style/home.css">
+	<link rel="stylesheet" href="style/bugguesser.css">
+	<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+	<script src="script/home-theme.js"></script>
+	<script src="script/home-nav.js" defer></script>
+	<script type="module" src="script/account.js"></script>
+	<script type="module" src="script/bugguesser-archive.js"></script>
+</head>
+
+<body>
+	<header>
+		<nav aria-label="Main navigation">
+			<a class="brand" href="./index.html">Home</a>
+			<div class="menu">
+				<details name="nav-menu">
+					<summary>Games</summary>
+					<div class="dropdown" aria-label="Games menu">
+						<a class="dropdown-link" href="bugguesser.html">Bugguesser</a>
+						<a class="dropdown-link" href="bugguesser-archive.html" aria-current="page">Bugguesser Archive</a>
+					</div>
+				</details>
+				<button class="account-nav-button" id="accountToggle" type="button">Sign in</button>
+				<button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode">
+					<img id="themeIcon" src="images/moon.svg" alt="" aria-hidden="true">
+				</button>
+			</div>
+		</nav>
+	</header>
+	<dialog class="account-dialog" id="accountDialog" aria-labelledby="accountDialogTitle">
+		<div class="account-dialog-heading">
+			<h2 id="accountDialogTitle">Sign in</h2>
+			<button class="account-dialog-close" id="accountClose" type="button">Close</button>
+		</div>
+		<p class="account-dialog-description" id="accountDialogDescription"></p>
+		<form class="account-form" id="accountForm">
+			<label for="accountEmail">Email</label>
+			<input id="accountEmail" name="email" type="email" autocomplete="email" required>
+			<label for="accountPassword">Password</label>
+			<input id="accountPassword" name="password" type="password" autocomplete="current-password" minlength="6" required>
+			<button class="account-submit" id="accountSubmit" type="submit">Sign in</button>
+		</form>
+		<button class="account-mode-toggle" id="accountModeToggle" type="button">Create an account</button>
+		<p class="account-message" id="accountMessage" role="status" aria-live="polite"></p>
+	</dialog>
+	<p class="account-notice" id="accountNotice" role="status" aria-live="polite" hidden></p>
+	<main class="game-shell archive-shell">
+		<section class="game-heading" aria-labelledby="archiveTitle">
+			<h1 id="archiveTitle">Bugguesser Archive</h1>
+			<p class="game-intro">Replay any past daily challenge, starting with Bugguesser #1.</p>
+		</section>
+
+		<section class="archive-calendar" aria-labelledby="calendarTitle">
+			<div class="archive-calendar-heading">
+				<button class="archive-month-button" id="previousMonth" type="button" aria-label="Previous month">‹</button>
+				<h2 id="calendarTitle" aria-live="polite"></h2>
+				<button class="archive-month-button" id="nextMonth" type="button" aria-label="Next month">›</button>
+			</div>
+			<div class="archive-calendar-grid archive-weekdays" aria-hidden="true">
+				<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span>
+				<span>Fri</span><span>Sat</span><span>Sun</span>
+			</div>
+			<ol class="archive-calendar-grid archive-days" id="archiveDays" aria-label="Challenge dates"></ol>
+			<p class="archive-date-status" id="archiveDateStatus" role="status" aria-live="polite"></p>
+		</section>
+
+		<section class="archive-challenge-options" id="archiveChallengeOptions" aria-labelledby="selectedDateTitle" hidden>
+			<h2 id="selectedDateTitle"></h2>
+			<p>Choose a mode to replay. Archive runs are practice and do not save progress.</p>
+			<div class="archive-mode-list" id="archiveModeList"></div>
+		</section>
+	</main>
+</body>
+
+</html>

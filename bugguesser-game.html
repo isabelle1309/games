@@ -23,6 +23,7 @@
 					<summary>Games</summary>
 					<div class="dropdown" aria-label="Games menu">
 						<a class="dropdown-link" href="bugguesser.html" aria-current="page">Bugguesser</a>
+						<a class="dropdown-link" href="bugguesser-archive.html">Bugguesser Archive</a>
 					</div>
 				</details>
 				<button class="account-nav-button" id="accountToggle" type="button">Sign in</button>
@@ -100,7 +101,7 @@
 			<div class="summary-copy">
 				<button class="copy-summary-button" id="copySummaryButton" type="button">Copy</button>
 			</div>
-			<a class="back-to-games" href="bugguesser.html">Back to game selection</a>
+			<a class="back-to-games" id="summaryBackLink" href="bugguesser.html">Back to game selection</a>
 			<div class="summary-table-wrap">
 				<table class="summary-table">
 					<thead>
@@ -117,7 +118,7 @@
 			</div>
 			<p class="disclaimer">Click on a character's name to navigate to their wiki page.</p>
 			<p class="alias-note">Click on the pencil <span class="character-alias-icon" aria-hidden="true">✎</span> icon to view character aliases.</p>
-			<p class="no-replay-note">This daily attempt is complete in this browser. Come back tomorrow for a new set.</p>
+			<p class="no-replay-note" id="noReplayNote"></p>
 		</section>
 	</main>
 </body>
