@@ -272,7 +272,7 @@ export const characters = [
     {
         name: "Vaultkeeper Cardinius",
         image: `${imageBase}thumb/7/70/Vaultkeeper_Cardinius.png/300px-Vaultkeeper_Cardinius.png`,
-        aliases: ["Cardinius", "Vaultkeeper"],
+        aliases: ["Cardinius"],
     },
     {
         name: "Vog",

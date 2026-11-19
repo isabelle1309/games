@@ -125,7 +125,7 @@ export const characters = [
     {
         name: "Clover Dancers",
         image: `${imageBase}thumb/c/c2/B_Clover_Dancers.png/300px-B_Clover_Dancers.png`,
-        aliases: ["Green Prince"],
+        aliases: ["Clover Dancer","Green Prince"],
     },
     {
         name: "Crawfather",

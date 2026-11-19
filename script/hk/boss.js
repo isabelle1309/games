@@ -167,7 +167,7 @@ export const characters = [
     {
         name: "Nightmare King",
         image: `${imageBase}9/95/Nightmare_King_without_Essence.png`,
-        aliases: ["Nightmare King Grimm", "NKG"],
+        aliases: ["Nightmare King Grimm", "NKG", "Nightmare King"],
     },
     // Nailmaster_Idle.png
     {
@@ -183,9 +183,9 @@ export const characters = [
     },
     // Great_Nailsage_Sly_Idle.png
     {
-        name: "Sly",
+        name: "Great Nailsage Sly",
         image: `${imageBase}thumb/2/26/Great_Nailsage_Sly_Idle.png/300px-Great_Nailsage_Sly_Idle.png`,
-        aliases: ["Great Nailsage Sly", "Nailsage Sly"],
+        aliases: ["Sly", "Nailsage Sly"],
     },
     // Hornet_Idle.png
     {
