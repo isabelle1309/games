@@ -1,4 +1,8 @@
-import { dailyChallengeStartDate } from "./bugguesser-config.js";
+import {
+    dailyChallengeStartDate,
+    dailyRosterRevision,
+    dailyStateVersion
+} from "./bugguesser-config.js";
 
 const modeEditions = [
     {
@@ -37,9 +41,11 @@ let displayedMonth = new Date(Date.UTC(
     currentDate.getUTCMonth(),
     1
 ));
-let selectedDate = new Date(currentDate.getTime() - 24 * 60 * 60 * 1000)
+const requestedDate = new URLSearchParams(window.location.search).get("date");
+const previousDate = new Date(currentDate.getTime() - 24 * 60 * 60 * 1000)
     .toISOString()
     .slice(0, 10);
+let selectedDate = isAvailableDate(requestedDate) ? requestedDate : previousDate;
 
 const calendarTitle = document.getElementById("calendarTitle");
 const archiveDays = document.getElementById("archiveDays");
@@ -59,6 +65,53 @@ function formatDate(date) {
 
 function getChallengeNumber(date) {
     return Math.floor((date.getTime() - startDate.getTime()) / 86400000) + 1;
+}
+
+function isAvailableDate(dateString) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString ?? "")) return false;
+    const date = new Date(`${dateString}T00:00:00.000Z`);
+    return !Number.isNaN(date.getTime())
+        && date.toISOString().slice(0, 10) === dateString
+        && dateString >= dailyChallengeStartDate
+        && dateString < today;
+}
+
+function getArchiveAttemptStatus(mode, date) {
+    const storageKey = `bugguesser-archive-${mode}-r${dailyRosterRevision}-${date}`;
+
+    try {
+        const storedState = sessionStorage.getItem(storageKey);
+        if (storedState === null) {
+            return { text: "Not yet started", className: "is-not-started" };
+        }
+
+        const state = JSON.parse(storedState);
+        if (!state
+            || state.version !== dailyStateVersion
+            || state.date !== date
+            || !Number.isInteger(state.round)
+            || state.round < 0
+            || state.round >= 10
+            || !Number.isFinite(state.score)
+            || typeof state.finished !== "boolean"
+            || !state.current
+            || !Number.isFinite(state.current.startedAt)
+            || !["correct", "revealed", "skipped", null].includes(state.current.outcome)
+            || state.finished !== (state.round === 9 && state.current.outcome !== null)) {
+            throw new Error("The saved archive attempt has an invalid format.");
+        }
+
+        if (state.finished) {
+            return { text: `Completed`, className: "is-completed" };
+        }
+        return {
+            text: `In progress`,
+            className: "is-in-progress"
+        };
+    } catch (error) {
+        console.error(`Could not read the ${mode} archive attempt for ${date}.`, error);
+        return { text: "Progress unavailable", className: "is-unavailable" };
+    }
 }
 
 function createDateButton(date) {
@@ -152,7 +205,14 @@ function renderSelectedDate() {
             const link = document.createElement("a");
             link.className = "archive-mode-link";
             link.href = `bugguesser-game.html?mode=${encodeURIComponent(mode.id)}&date=${selectedDate}`;
-            link.textContent = mode.title;
+            link.append(mode.title);
+
+            const attemptStatus = getArchiveAttemptStatus(mode.id, selectedDate);
+            link.classList.add(attemptStatus.className);
+            const status = document.createElement("small");
+            status.className = `archive-mode-link-status ${attemptStatus.className}`;
+            status.textContent = attemptStatus.text;
+            link.append(status);
             modeLinks.append(link);
         }
 
@@ -194,5 +254,7 @@ nextMonth.addEventListener("click", () => {
     render();
 });
 
-if (selectedDate < dailyChallengeStartDate || selectedDate >= today) selectedDate = "";
+window.addEventListener("pageshow", () => render());
+
+if (!isAvailableDate(selectedDate)) selectedDate = "";
 render();

@@ -334,9 +334,29 @@ body {
 	color: var(--text);
 	text-decoration: none;
 }
+.archive-mode-link-status {
+	display: block;
+	margin-top: 4px;
+	color: var(--game-muted);
+	font-size: .75rem;
+}
+.archive-mode-link-status.is-completed {
+	color: var(--completed);
+	font-weight: 600;
+}
+.archive-mode-link-status.is-in-progress {
+	color: var(--gold);
+	font-weight: 600;
+}
 .archive-mode-link:hover {
 	border-color: var(--glow);
 	background: var(--surface-hover);
+}
+.archive-mode-link.is-completed {
+	border-color: var(--completed);
+}
+.archive-mode-link.is-in-progress {
+	border-color: var(--gold);
 }
 .archive-mode-link:focus-visible {
 	outline-offset: 1px;

@@ -259,21 +259,34 @@ function getDailyStorageKey() {
     return `bugguesser-daily-${selectedMode}-r${dailyRosterRevision}-${dailyDate}`;
 }
 
+function getArchiveStorageKey() {
+    return `bugguesser-archive-${selectedMode}-r${dailyRosterRevision}-${dailyDate}`;
+}
+
 function saveDailyState() {
-    if (isArchiveReplay) return true;
     if (storageUnavailable) return false;
 
     dailyState.updatedAt = new Date().toISOString();
     try {
-        localStorage.setItem(getDailyStorageKey(), JSON.stringify(dailyState));
+        const storage = isArchiveReplay ? sessionStorage : localStorage;
+        const storageKey = isArchiveReplay ? getArchiveStorageKey() : getDailyStorageKey();
+        storage.setItem(storageKey, JSON.stringify(dailyState));
     } catch (error) {
-        console.error("Could not save the daily Bugguesser attempt.", error);
+        console.error(
+            isArchiveReplay
+                ? "Could not save the archive Bugguesser attempt for this session."
+                : "Could not save the daily Bugguesser attempt.",
+            error
+        );
         storageUnavailable = true;
-        gameStatus.textContent =
-            "Daily progress could not be saved. The game is paused to protect this attempt.";
+        gameStatus.textContent = isArchiveReplay
+            ? "Archive progress could not be saved in this session. The game is paused to protect this attempt."
+            : "Daily progress could not be saved. The game is paused to protect this attempt.";
         setRoundControlsDisabled(true);
         return false;
     }
+
+    if (isArchiveReplay) return true;
 
     if (getCachedUser() && canSyncCloud) {
         void saveGameProgress(selectedMode, dailyDate, dailyState).catch((error) => {
@@ -588,9 +601,12 @@ function showDailySummary() {
         `${gameModes[selectedMode].title}`;
     summaryDate.textContent = `${gameModes[selectedMode].title} · ${dailyDate} (UTC)`;
     backLink.href = isArchiveReplay ? "bugguesser-archive.html" : "bugguesser.html";
+    if (isArchiveReplay) {
+        backLink.href += `?date=${encodeURIComponent(dailyDate)}`;
+    }
     backLink.textContent = isArchiveReplay ? "Back to archive" : "Back to game selection";
     noReplayNote.textContent = isArchiveReplay
-        ? "Archive runs are for practice and do not save progress."
+        ? "Archive attempts are saved in this browser session only and are never synced to an account."
         : "This daily attempt is complete in this browser. Come back tomorrow for a new set.";
     summaryShareText.textContent = createDailySummaryText();
     dailySummaryBody.replaceChildren();
@@ -804,7 +820,9 @@ function startGame() {
     if (dailyState.current.startedAt === null) {
         dailyState.current.startedAt = Date.now();
         if (!saveDailyState()) {
-            disableGame("Daily progress could not be saved. The game is paused to protect your attempt.");
+            disableGame(isArchiveReplay
+                ? "Archive progress could not be saved in this session. The attempt is paused."
+                : "Daily progress could not be saved. The game is paused to protect your attempt.");
             return;
         }
     }
@@ -892,8 +910,40 @@ async function selectGameMode(mode) {
         dailyRosterRevision
     )[mode];
     if (isArchiveReplay) {
-        dailyState = createInitialState();
-        startGame();
+        let hasStoredArchiveState = false;
+        let storedArchiveState;
+        try {
+            const storedState = sessionStorage.getItem(getArchiveStorageKey());
+            hasStoredArchiveState = storedState !== null;
+            storedArchiveState = storedState === null
+                ? null
+                : migrateSavedState(JSON.parse(storedState));
+        } catch (error) {
+            console.error("Could not load the saved archive Bugguesser attempt.", error);
+            disableGame("Saved archive progress could not be read. This attempt was not reset.");
+            return;
+        }
+
+        if (hasStoredArchiveState) {
+            restoreSavedRoster(storedArchiveState);
+            if (!isValidDailyState(storedArchiveState)) {
+                console.error("Saved archive Bugguesser attempt has an invalid format.");
+                disableGame("Saved archive progress is invalid. This attempt was not reset.");
+                return;
+            }
+            dailyState = storedArchiveState;
+        } else {
+            dailyState = createInitialState();
+        }
+
+        if (dailyState.finished) {
+            showDailySummary();
+        } else if (dailyState.current.outcome) {
+            roundContent.hidden = false;
+            renderCurrentRound();
+        } else {
+            startGame();
+        }
         return;
     }
 
