@@ -309,6 +309,11 @@ body {
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 8px;
 }
+.archive-mode-list > .archive-mode-edition:last-child {
+	grid-column: 1 / -1;
+	width: calc((100% - 8px) / 2);
+	justify-self: center;
+}
 .archive-mode-edition h3 {
 	margin: 0 0 10px;
 	color: var(--gold);
@@ -750,6 +755,7 @@ body {
 	.archive-day-empty,
 	.archive-day { min-height: 48px; }
 	.archive-mode-list { grid-template-columns: 1fr; }
+	.archive-mode-list > .archive-mode-edition:last-child { width: 100%; }
 	.daily-summary { padding: 18px 14px; }
 	.sprite-frame { min-height: 235px; }
 	.sprite-frame img { height: 190px; }
