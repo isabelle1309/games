@@ -50,7 +50,7 @@ body {
 	white-space: nowrap;
 }
 .game-intro {
-	margin: 12px 0 0;
+	margin: 12px 0;
 	color: var(--game-muted);
 	font-size: 1rem;
 }
@@ -179,6 +179,7 @@ body {
 }
 .archive-page-link-wrap {
 	width: min(100%, 280px);
+	margin-inline: auto;
 }
 .archive-page-link-wrap .game-mode-button {
 	align-items: center;
