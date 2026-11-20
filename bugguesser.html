@@ -53,14 +53,13 @@
 	<main class="game-shell">
 		<section class="game-heading" aria-labelledby="gameTitle">
 			<h1 id="gameTitle">Who's That Bug?</h1>
-			<p class="game-intro" id="gameIntro">Choose a daily challenge from Hollow Knight or Silksong.</p>
+			<p class="game-intro" id="gameIntro">Choose a daily challenge from Hollow Knight, Silksong, or both.</p>
 		</section>
 
 		<section class="game-picker" aria-label="Choose a game">
 			<section class="game-edition" aria-labelledby="hollowKnightTitle">
 				<h2 id="hollowKnightTitle">Hollow Knight</h2>
 				<img class="game-title-divider" src="images/hk/hk_hr.png" alt="" aria-hidden="true">
-				<p>Choose a daily challenge:</p>
 				<div class="game-mode-list">
 					<div class="game-mode-option">
 						<a class="game-mode-button" data-game-mode="hk-enemies" href="bugguesser-game.html?mode=hk-enemies">
@@ -93,7 +92,6 @@
 			<section class="game-edition" aria-labelledby="silksongTitle">
 				<h2 id="silksongTitle">Silksong</h2>
 				<img class="game-title-divider" src="images/hk/hkss_hr.png" alt="" aria-hidden="true">
-				<p>Choose a daily challenge:</p>
 				<div class="game-mode-list">
 					<div class="game-mode-option">
 						<a class="game-mode-button" data-game-mode="hkss-enemies" href="bugguesser-game.html?mode=hkss-enemies">
@@ -122,7 +120,40 @@
 				</div>
 				<img class="game-edition-fleur" src="images/hk/hkssfleur.png" alt="" aria-hidden="true">
 			</section>
+
+			<section class="game-edition" aria-labelledby="combinedGamesTitle">
+				<h2 id="combinedGamesTitle">Hollow Knight + Silksong</h2>
+				<img class="game-title-divider" src="images/fleurs/hkhksstop.png" alt="" aria-hidden="true">
+				<div class="game-mode-list">
+					<div class="game-mode-option">
+						<a class="game-mode-button" data-game-mode="hk-hkss-enemies" href="bugguesser-game.html?mode=hk-hkss-enemies">
+							<span>Enemies</span>
+							<small class="mode-completion-info">Daily challenge not yet started</small>
+						</a>
+					</div>
+					<div class="game-mode-option">
+						<a class="game-mode-button" data-game-mode="hk-hkss-npcs" href="bugguesser-game.html?mode=hk-hkss-npcs">
+							<span>NPCs</span>
+							<small class="mode-completion-info">Daily challenge not yet started</small>
+						</a>
+					</div>
+					<div class="game-mode-option">
+						<a class="game-mode-button" data-game-mode="hk-hkss-bosses" href="bugguesser-game.html?mode=hk-hkss-bosses">
+							<span>Bosses</span>
+							<small class="mode-completion-info">Daily challenge not yet started</small>
+						</a>
+					</div>
+					<div class="game-mode-option">
+						<a class="game-mode-button" data-game-mode="hk-hkss-npcs-bosses" href="bugguesser-game.html?mode=hk-hkss-npcs-bosses">
+							<span>NPCs &amp; bosses</span>
+							<small class="mode-completion-info">Daily challenge not yet started</small>
+						</a>
+					</div>
+				</div>
+				<img class="game-edition-fleur" src="images/fleurs/hkhksshr.png" alt="" aria-hidden="true">
+			</section>
 		</section>
+
 		<div class="archive-page-link-wrap">
 			<div class="game-mode-option">
 				<a class="game-mode-button" href="bugguesser-archive.html">Browse archive</a>

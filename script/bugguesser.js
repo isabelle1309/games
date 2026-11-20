@@ -71,6 +71,31 @@ const gameModes = {
         title: "Silksong - NPCs & bosses",
         summaryTitle: "Silksong NPCs & Bosses",
         characters: [...hkssNpcCharacters, ...hkssBossCharacters]
+    },
+    "hk-hkss-enemies": {
+        title: "Hollow Knight + Silksong - Enemies",
+        summaryTitle: "HK + HKSS Enemies",
+        characters: [...enemyCharacters, ...hkssEnemyCharacters]
+    },
+    "hk-hkss-npcs": {
+        title: "Hollow Knight + Silksong - NPCs",
+        summaryTitle: "HK + HKSS NPCs",
+        characters: [...npcCharacters, ...hkssNpcCharacters]
+    },
+    "hk-hkss-bosses": {
+        title: "Hollow Knight + Silksong - Bosses",
+        summaryTitle: "HK + HKSS Bosses",
+        characters: [...bossCharacters, ...hkssBossCharacters]
+    },
+    "hk-hkss-npcs-bosses": {
+        title: "Hollow Knight + Silksong - NPCs & bosses",
+        summaryTitle: "HK + HKSS NPCs & Bosses",
+        characters: [
+            ...npcCharacters,
+            ...bossCharacters,
+            ...hkssNpcCharacters,
+            ...hkssBossCharacters
+        ]
     }
 };
 

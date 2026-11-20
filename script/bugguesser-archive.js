@@ -18,6 +18,15 @@ const modeEditions = [
             { id: "hkss-bosses", title: "Bosses" },
             { id: "hkss-npcs-bosses", title: "NPCs & bosses" }
         ]
+    },
+    {
+        title: "Hollow Knight + Silksong",
+        modes: [
+            { id: "hk-hkss-enemies", title: "Enemies" },
+            { id: "hk-hkss-npcs", title: "NPCs" },
+            { id: "hk-hkss-bosses", title: "Bosses" },
+            { id: "hk-hkss-npcs-bosses", title: "NPCs & bosses" }
+        ]
     }
 ];
 const today = new Date().toISOString().slice(0, 10);
