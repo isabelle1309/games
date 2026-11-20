@@ -426,6 +426,12 @@ body {
 	filter: none;
 	transition: filter .25s ease, opacity .6s ease;
 }
+.sprite-frame img.is-eva {
+	transition: opacity .5s ease;
+}
+.sprite-frame img.is-eva.is-revealed {
+	transition: filter .25s ease, opacity .5s ease;
+}
 .sprite-frame img:not([src]) { display: none; }
 .sprite-caption {
 	position: absolute;

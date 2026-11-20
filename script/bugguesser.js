@@ -360,12 +360,14 @@ function renderCurrentRound() {
     answer = dailyCharacters[dailyState.round];
     updateStats();
     sprite.classList.remove("is-revealed");
+    sprite.classList.toggle("is-eva", answer.name === "Eva");
     sprite.alt = "Black silhouette of a character";
     sprite.src = answer.silhouette ?? answer.image;
     guessForm.reset();
     renderNamePattern();
 
-    if (sprite.complete && sprite.naturalWidth > 0) {
+    if (sprite.complete && sprite.naturalWidth > 0
+        && !(answer.name === "Eva" && dailyState.current.outcome)) {
         requestAnimationFrame(() => sprite.classList.add("is-visible"));
     }
 
@@ -528,8 +530,14 @@ function positionCharacterTooltip(trigger, tooltip) {
 
 function renderResolvedRound() {
     const result = dailyState.results.at(-1);
+    if (answer.name === "Eva") {
+        sprite.classList.remove("is-visible");
+    }
     sprite.src = answer.image;
     sprite.classList.add("is-revealed");
+    if (answer.name === "Eva" && sprite.complete && sprite.naturalWidth > 0) {
+        requestAnimationFrame(() => sprite.classList.add("is-visible"));
+    }
     guessInput.disabled = true;
     guessButton.disabled = true;
     revealCharacterButton.disabled = true;
