@@ -49,9 +49,9 @@ export const characters = [
     },
     // Great_Nailsage_Sly_Idle.png
     {
-        name: "Great Nailsage Sly",
-        image: `${imageBase}thumb/2/26/Great_Nailsage_Sly_Idle.png/300px-Great_Nailsage_Sly_Idle.png`,
-        aliases: ["Sly", "Nailsage Sly"],
+        name: "Sly",
+        image: `${imageBase}f/f9/Sly.png`,
+        aliases: ["Great Nailsage Sly", "Nailsage Sly"],
     },
     // Cloth_Idle.png
     {

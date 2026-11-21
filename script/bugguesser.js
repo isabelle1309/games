@@ -35,66 +35,66 @@ const gameModes = {
     "hk-enemies": {
         title: "Hollow Knight - Enemies",
         summaryTitle: "HK Enemies",
-        characters: enemyCharacters
+        characters: hkEnemy
     },
     "hk-npcs": {
         title: "Hollow Knight - NPCs",
         summaryTitle: "HK NPCs",
-        characters: npcCharacters
+        characters: hkNpc
     },
     "hk-bosses": {
         title: "Hollow Knight - Bosses",
         summaryTitle: "HK Bosses",
-        characters: bossCharacters
+        characters: hkBoss
     },
     "hk-npcs-bosses": {
         title: "Hollow Knight - NPCs & bosses",
         summaryTitle: "HK NPCs & Bosses",
-        characters: [...npcCharacters, ...bossCharacters]
+        characters: [...hkNpc, ...hkBoss]
     },
     "hkss-enemies": {
         title: "Silksong - Enemies",
         summaryTitle: "Silksong Enemies",
-        characters: hkssEnemyCharacters
+        characters: hkssEnemy
     },
     "hkss-bosses": {
         title: "Silksong - Bosses",
         summaryTitle: "Silksong Bosses",
-        characters: hkssBossCharacters
+        characters: hkssBoss
     },
     "hkss-npcs": {
         title: "Silksong - NPCs",
         summaryTitle: "Silksong NPCs",
-        characters: hkssNpcCharacters
+        characters: hkssNpc
     },
     "hkss-npcs-bosses": {
         title: "Silksong - NPCs & bosses",
         summaryTitle: "Silksong NPCs & Bosses",
-        characters: [...hkssNpcCharacters, ...hkssBossCharacters]
+        characters: [...hkssNpc, ...hkssBoss]
     },
     "hk-hkss-enemies": {
         title: "Hollow Knight + Silksong - Enemies",
         summaryTitle: "HK + HKSS Enemies",
-        characters: [...enemyCharacters, ...hkssEnemyCharacters]
+        characters: [...hkEnemy, ...hkssEnemy]
     },
     "hk-hkss-npcs": {
         title: "Hollow Knight + Silksong - NPCs",
         summaryTitle: "HK + HKSS NPCs",
-        characters: [...npcCharacters, ...hkssNpcCharacters]
+        characters: [...hkNpc, ...hkssNpc]
     },
     "hk-hkss-bosses": {
         title: "Hollow Knight + Silksong - Bosses",
         summaryTitle: "HK + HKSS Bosses",
-        characters: [...bossCharacters, ...hkssBossCharacters]
+        characters: [...hkBoss, ...hkssBoss]
     },
     "hk-hkss-npcs-bosses": {
         title: "Hollow Knight + Silksong - NPCs & bosses",
         summaryTitle: "HK + HKSS NPCs & Bosses",
         characters: [
-            ...npcCharacters,
-            ...bossCharacters,
-            ...hkssNpcCharacters,
-            ...hkssBossCharacters
+            ...hkNpc,
+            ...hkBoss,
+            ...hkssNpc,
+            ...hkssBoss
         ]
     }
 };

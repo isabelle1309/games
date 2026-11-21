@@ -41,9 +41,14 @@ export const characters = [
         image: `${imageBase}8/8c/Caretaker.png`,
     },
     {
-        name: "Tipp and Pill",
-        image: `images/hkss/TIPPANDPILL.png`,
-        aliases: ["Tipp", "Pill", "Tipp & Pill"],
+        name: "Tipp",
+        image: `images/hkss/TIPP.png`,
+        aliases: ["Tipp", "Courier Tipp", "Courier"],
+    },
+    {
+        name: "Pill",
+        image: `images/hkss/PILL.png`,
+        aliases: ["Pill", "Courier Pill", "Courier"],
     },
     {
         name: "Hive Queen Vespa",
@@ -133,6 +138,7 @@ export const characters = [
     {
         name: "Mister Mushroom",
         image: `${imageBase}f/fc/Mister_Mushroom.png`,
+        aliases: ["Herald"],
     },
     {
         name: "Nuu",

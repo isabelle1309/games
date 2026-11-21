@@ -240,6 +240,7 @@ export const characters = [
     {
         name: "Wisp",
         image: `${imageBase}1/1f/B_Wisp.png`,
+        aliases: ["Wisps"],
     },
     {
         name: "Burning Bug",
